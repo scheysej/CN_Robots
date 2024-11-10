@@ -25,14 +25,7 @@ CN_Robots
 └── tests/
 ```
 
-
-### Team Members
-- **Andre Price Jr**
-- **Eyiara Oladipo**
-- **Benyamain Yacoob**
-- **Ethan Scheys**
-
-## Milestone 1 (Due: November 29<sup>th</sup>, 2024)
+## Milestone \#1 (Due: November 29<sup>th</sup>, 2024)
 - **Objective**: Complete setup of scripts, libraries, dependencies, and basic robot communication.
 - **Tasks**:
   - **Discovery Protocol**: Establish UDP-based discovery for robots and joysticks.
@@ -42,7 +35,7 @@ CN_Robots
   - **Dynamic Joining**: Develop a protocol to allow new robots to join the convoy dynamically.
   - **Security and Authentication**: Implement encryption and authentication for secure convoy communications.
 
-## Milestone 2 (Due: December 6<sup>th</sup>, 2024)
+## Milestone \#2 (Due: December 6<sup>th</sup>, 2024)
 - **Objective**: Complete all remaining tasks, including final testing and project demonstration.
 
 ## Folder Structure
@@ -51,5 +44,3 @@ CN_Robots
 - **tests/**: Contains testing scripts for each functionality.
 
 ---
-
-*Note: Please refer to each subfolder’s README.md for specific implementation details as we complete each milestone.*
