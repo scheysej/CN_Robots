@@ -12,6 +12,7 @@ This system aims to:
 5. Allow dynamic joining of new robots into the convoy.
 6. Ensure security through encryption and authentication mechanisms.
 
+```
 CN_Robots
 ├── README.md
 ├── src/
@@ -22,6 +23,7 @@ CN_Robots
 │   ├── dynamic-joining/
 │   └── security-authentication/
 └── tests/
+```
 
 
 ### Team Members
