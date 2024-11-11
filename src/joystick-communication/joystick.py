@@ -1,8 +1,8 @@
 """
- Author: Benyamain Yacoob 
- Date: 11-11-24
- Course: ELEE 4680
- Instructor: Dr. Utayba Mohammad
+Author: Benyamain Yacoob
+Date: 11-11-24
+Course: ELEE 4680
+Instructor: Dr. Utayba Mohammad
 """
 
 import socket
@@ -15,7 +15,7 @@ LEADER_PORT = 5005
 def create_joystick_message(id, device_type, ip, status, role, x, y, button_state):
     """
     Create a joystick control message following the protocol.
-    
+
     Parameters:
     id (int): Unique identifier for the joystick
     device_type (str): Type of the device (e.g., "Joystick")
@@ -25,7 +25,7 @@ def create_joystick_message(id, device_type, ip, status, role, x, y, button_stat
     x (int): X-axis value of the joystick (-100 to 100)
     y (int): Y-axis value of the joystick (-100 to 100)
     button_state (int): Bitfield representing the state of the joystick buttons
-    
+
     Returns:
     str: The formatted joystick control message
     """
@@ -48,17 +48,25 @@ if __name__ == "__main__":
             print("Waiting for the discovery process to identify the leader...")
             time.sleep(1)
 
-    # once we have the leader's IP address, we can start sending joystick messages
-    while True:
-        id = int(input("Enter joystick ID: "))
-        device_type = input("Enter device type: ")
-        ip = input("Enter joystick IP: ")
-        status = input("Enter joystick status: ")
-        role = input("Enter joystick role: ")
-        x = int(input("Enter X-axis value (-100 to 100): "))
-        y = int(input("Enter Y-axis value (-100 to 100): "))
-        button_state = int(input("Enter button state (bitfield): "))
+    # assuming we have an external joystick controller connected
+    joystick_id = 9294
+    joystick_device_type = "Joystick"
+    joystick_ip = "111.222.333.444"
+    joystick_status = "Active"
+    joystick_role = "Undecided"
 
-        message = create_joystick_message(id, device_type, ip, status, role, x, y, button_state)
+    while True:
+        # joystick_x: Represents the X-axis value of the joystick (-100 to 100)
+        # joystick_y: Represents the Y-axis value of the joystick (-100 to 100)
+        # joystick_buttons: Represents the bitfield of the joystick buttons
+        joystick_x = os.system("joystick_read x")
+        joystick_y = os.system("joystick_read y")
+        joystick_buttons = os.system("joystick_read buttons")
+
+        message = create_joystick_message(
+            joystick_id, joystick_device_type, joystick_ip,
+            joystick_status, joystick_role, 0, 0, 0
+        )
         send_to_leader(message)
+
         time.sleep(0.5)
