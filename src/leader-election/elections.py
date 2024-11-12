@@ -1,25 +1,32 @@
-import random
+"""
+Author: Andre Price
+Date: 11-11-24
+Course: ELEE 4680
+Instructor: Dr. Utayba Mohammad
+"""
+
 import threading
 import time
 from discovery import discovered_robots  # Assuming discovery.py is in the same directory
+from utils.device_identity import get_device_identity
 
 class Robot:
-    def __init__(self, robot_id):
-        self.robot_id = robot_id
-        self.election_id = random.randint(1, 100)
+    def __init__(self):
+        self.id, _ = get_device_identity()
+        self.election_id = self.id  # Use device ID as election ID
         self.is_leader = False
         self.received_ids = {}
 
     def broadcast(self, stop_event):
         #Simulate broadcasting the robot's ElectionID to all other robots.
         broadcast_message = {
-            "RobotID": self.robot_id,
+            "RobotID": self.id,
             "ElectionID": self.election_id
         }
         while not stop_event.is_set():
-            print(f"Robot {self.robot_id} broadcasting ElectionID: {self.election_id}")
+            print(f"Robot {self.id} broadcasting ElectionID: {self.election_id}")
             for robot in robots:
-                if robot.robot_id != self.robot_id:
+                if robot.id != self.id:
                     robot.receive_broadcast(broadcast_message)
             time.sleep(1)  # Broadcast every second for demonstration
 
@@ -29,35 +36,46 @@ class Robot:
 
     def decide_leader(self):
         #Decide the leader based on the highest ElectionID received.
-        all_ids = {self.robot_id: self.election_id, **self.received_ids}
+        all_ids = {self.id: self.election_id, **self.received_ids}
         leader_id = max(all_ids, key=all_ids.get)
         
-        if leader_id == self.robot_id:
+        if leader_id == self.id:
             self.is_leader = True
-            return self.robot_id
+            return self.id
         return leader_id
 
     def announce_leader(self, robots):
         #Announce to all robots that this robot is the leader.
         for robot in robots:
-            if robot.robot_id != self.robot_id:
-                robot.receive_leader_announcement(self.robot_id)
+            if robot.id != self.id:
+                robot.receive_leader_announcement(self.id)
 
     def receive_leader_announcement(self, leader_id):
         #Receive the leader announcement and recognize the leader.
-        print(f"Robot {self.robot_id} recognizes Robot {leader_id} as the leader.")
+        print(f"Robot {self.id} recognizes Robot {leader_id} as the leader.")
 
     def broadcast_leader(self, stop_event):
         #Broadcast that this robot is the leader to all others until acknowledged.
         leader_announcement = {
-            "LeaderID": self.robot_id
+            "LeaderID": self.id
         }
         while not stop_event.is_set():
-            print(f"Leader Robot {self.robot_id} broadcasting that it is the leader.")
+            print(f"Leader Robot {self.id} broadcasting that it is the leader.")
             for robot in robots:
-                if robot.robot_id != self.robot_id:
-                    robot.receive_leader_announcement(self.robot_id)
+                if robot.id != self.id:
+                    robot.receive_leader_announcement(self.id)
             time.sleep(1)  # Leader broadcasts every second
+
+def notify_joystick_of_leader(leader_robot):
+    """Notify joystick of the elected leader."""
+    leader_info = {
+        'LEADER_IP': leader_robot.ip,
+        'LEADER_ID': leader_robot.id
+    }
+    
+    # Write leader information to a file that joystick.py can read
+    with open('leader_info.txt', 'w') as f:
+        f.write(f"{leader_info['LEADER_IP']}\n{leader_info['LEADER_ID']}")
 
 def simulate_leader_election():
     stop_event = threading.Event()  # Event to signal the end of broadcasting
@@ -80,26 +98,16 @@ def simulate_leader_election():
     # Consensus Protocol: Decide and announce leader
     for robot in robots:
         leader_id = robot.decide_leader()
-        print(f"Robot {robot.robot_id} thinks Robot {leader_id} should be the leader.")
+        print(f"Robot {robot.id} thinks Robot {leader_id} should be the leader.")
 
     # Leader Announcement
     for robot in robots:
         if robot.is_leader:
-            print(f"Robot {robot.robot_id} is the leader and will announce.")
-            leader_stop_event = threading.Event()
-            leader_thread = threading.Thread(target=robot.broadcast_leader, args=(leader_stop_event,))
-            leader_thread.start()
-            
-            # Let the leader announce for a short time, then stop
-            time.sleep(3)
-            leader_stop_event.set()
-            leader_thread.join()
-            
-            print(f"Joystick notified: Robot {robot.robot_id} is the leader.")
-            break  # Only the leader announces
+            notify_joystick_of_leader(robot)
+            break
 
 # Create robots based on discovered_robots but generate ElectionID here
-robots = [Robot(robot_id=i + 1) for i, _ in enumerate(discovered_robots)]
+robots = [Robot() for i, _ in enumerate(discovered_robots)]
 
 # Run the simulation
 simulate_leader_election()
