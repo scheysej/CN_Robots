@@ -16,11 +16,13 @@ This system aims to:
 CN_Robots
 ├── README.md
 ├── src/
+│   ├── main.py
 │   ├── discovery/
 │   ├── leader-election/
 │   ├── joystick-communication/
 │   ├── command-broadcast/
 │   ├── dynamic-joining/
+│   ├── utils/
 │   └── security-authentication/
 └── tests/
 ```
