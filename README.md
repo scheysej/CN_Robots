@@ -18,12 +18,12 @@ CN_Robots
 ├── src/
 │   ├── main.py
 │   ├── discovery/
-│   ├── leader-election/
-│   ├── joystick-communication/
-│   ├── command-broadcast/
-│   ├── dynamic-joining/
+│   ├── leader_election/
+│   ├── joystick_communication/
+│   ├── command_broadcast/
+│   ├── dynamic_joining/
 │   ├── utils/
-│   └── security-authentication/
+│   └── security_authentication/
 └── tests/
 ```
 
