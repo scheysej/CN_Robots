@@ -40,8 +40,8 @@ class Robot:
 
     def decide_leader(self):
         #Decide the leader based on the highest ElectionID received.
-        all_ids = {self.id: self.election_id, **self.received_ids}
-        leader_id = max(all_ids, key=all_ids.get)
+        #all_ids = {self.id: self.election_id, **self.received_ids}
+        leader_id = max(self.election_id)
         
         if leader_id == self.id:
             self.is_leader = True
