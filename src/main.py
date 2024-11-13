@@ -1,7 +1,7 @@
 from discovery import discover
 
 def main():
-    robots = discover.discover_neighbouring_robots()
+    robots = discover.discover_neighbouring_devices()
     print(robots)
 
 if __name__ == "__main__":
