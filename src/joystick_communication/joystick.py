@@ -22,6 +22,8 @@ class KeyboardController:
         self.leader_ip = None
         self.leader_port = 65009
         self.leader_id = None
+        self.last_x_command = "center"
+        self.last_y_command = "stop"
         
     def get_local_ip(self):
         with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
@@ -41,22 +43,32 @@ class KeyboardController:
                 time.sleep(1)
 
     def read_keyboard_input(self):
-        x = 0  # -100 (left) to 100 (right)
-        y = 0  # -100 (down) to 100 (up)
+        x_command = "center"  # default steering position
+        y_command = "stop"    # default movement state
         
-        if keyboard.is_pressed('up'):
-            y = 100
-        elif keyboard.is_pressed('down'):
-            y = -100
-            
+        # horizontal movement (steering)
         if keyboard.is_pressed('left'):
-            x = -100
+            x_command = "left"
         elif keyboard.is_pressed('right'):
-            x = 100
-            
-        return x, y
+            x_command = "right"
+        # when neither left nor right is pressed, it will remain "center"
+        
+        # vertical movement
+        if keyboard.is_pressed('up'):
+            y_command = "forward"
+        elif keyboard.is_pressed('down'):
+            y_command = "backward"
+        # when neither up nor down is pressed, it will remain "stop"
+        
+        commands_changed = (x_command != self.last_x_command or 
+                          y_command != self.last_y_command)
+        
+        self.last_x_command = x_command
+        self.last_y_command = y_command
+        
+        return x_command, y_command, commands_changed
 
-    def create_message(self, x, y):
+    def create_message(self, x_command, y_command):
         """Create a signed message that can be validated by the leader."""
         message = {
             "id": self.id,
@@ -64,8 +76,8 @@ class KeyboardController:
             "ip": self.ip,
             "status": self.status,
             "role": self.role,
-            "movement_x": x,
-            "movement_y": y,
+            "movement_x": x_command,
+            "movement_y": y_command,
             "timestamp": time.time()
         }
         message["signature"] = self.sign_message(message)
@@ -93,14 +105,14 @@ class KeyboardController:
 
         while True:
             try:
-                x, y, _ = self.read_keyboard_input()
+                x_command, y_command, commands_changed = self.read_keyboard_input()
                 
-                # only send message if there's actual movement
-                if x != 0 or y != 0:
-                    message = self.create_message(x, y, 0)
+                # only send message if commands changed
+                if commands_changed:
+                    message = self.create_message(x_command, y_command)
                     self.send_to_leader(message)
 
-                time.sleep(5.0)
+                time.sleep(0.1)
                 
             except KeyboardInterrupt:
                 print("\nKeyboard controller stopped.")

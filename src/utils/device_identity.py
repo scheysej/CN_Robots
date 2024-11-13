@@ -19,8 +19,10 @@ def find_project_root():
 
 def find_keyboard_device():
     """Check for keyboard presence"""
-    keyboard_devices = glob.glob("/dev/input/by-id/*kbd*")
-    return bool(keyboard_devices)
+    # TODO - FIND WAY TO TEST WITHOUT KEYBOARD SO THAT RASPBERRY PIS ARENT ALWAYS DETECTED AS KEYBOARD
+    # keyboard_devices = glob.glob("/dev/input/by-id/*kbd*")
+    # return bool(keyboard_devices)
+    return False
 
 def get_device_identity():
     project_root = find_project_root()
@@ -42,8 +44,8 @@ def get_device_identity():
         raise Exception("Could not read Raspberry Pi serial number")
     
     device_type = "Robot"
-    if find_keyboard_device():
-        device_type = "Keyboard"
+    # if find_keyboard_device():
+    #     device_type = "Keyboard"
     
     identity = {
         'id': device_id,
