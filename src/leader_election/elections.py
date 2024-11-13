@@ -12,7 +12,7 @@ from utils.device_identity import get_device_identity
 
 class Robot:
     def __init__(self, robot_id, status, ip, type):
-        self.robot_id = robot_id
+        self.id = robot_id
         self.status = status
         self.ip = ip
         self.device_type = type
@@ -21,7 +21,7 @@ class Robot:
         self.is_leader = False
         self.received_ids = {}
 
-    def broadcast(self, stop_event):
+    def broadcast(self, stop_event, robots):
         #Simulate broadcasting the robot's ElectionID to all other robots.
         broadcast_message = {
             "RobotID": self.id,
@@ -63,6 +63,7 @@ class Robot:
         leader_announcement = {
             "LeaderID": self.id
         }
+
         while not stop_event.is_set():
             print(f"Leader Robot {self.id} broadcasting that it is the leader.")
             for robot in robots:
@@ -86,7 +87,7 @@ def simulate_leader_election(devices):
     # robots = [Robot() for _ in enumerate(devices)]
     robots = []
     for robot in devices:
-        if robot['DeviceType'] is 'Robot':
+        if robot['DeviceType'] == 'Robot':
             robots.append(Robot(robot['ID'], robot['Status'], robot['IP'], robot['DeviceType']))
     
     stop_event = threading.Event()  # Event to signal the end of broadcasting
@@ -94,7 +95,7 @@ def simulate_leader_election(devices):
 
     # Initialize each robot and start broadcasting on a separate thread
     for robot in robots:
-        thread = threading.Thread(target=robot.broadcast, args=(stop_event,))
+        thread = threading.Thread(target=robot.broadcast, args=(stop_event,robots))
         threads.append(thread)
         thread.start()
     
