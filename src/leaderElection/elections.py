@@ -9,6 +9,8 @@ import threading
 import time
 from discovery import discovered_robots  # Assuming discovery.py is in the same directory
 from utils.device_identity import get_device_identity
+# Create robots based on discovered_robots but generate ElectionID here
+robots = [Robot() for i, _ in enumerate(discovered_robots)]
 
 class Robot:
     def __init__(self):
@@ -68,14 +70,14 @@ class Robot:
 
 def notify_joystick_of_leader(leader_robot):
     """Notify joystick of the elected leader."""
-    leader_info = {
+    return {
         'LEADER_IP': leader_robot.ip,
         'LEADER_ID': leader_robot.id
     }
     
     # Write leader information to a file that joystick.py can read
-    with open('leader_info.txt', 'w') as f:
-        f.write(f"{leader_info['LEADER_IP']}\n{leader_info['LEADER_ID']}")
+   # with open('leader_info.txt', 'w') as f:
+     #   f.write(f"{leader_info['LEADER_IP']}\n{leader_info['LEADER_ID']}")
 
 def simulate_leader_election():
     stop_event = threading.Event()  # Event to signal the end of broadcasting
@@ -103,11 +105,16 @@ def simulate_leader_election():
     # Leader Announcement
     for robot in robots:
         if robot.is_leader:
+            print(f"Robot {robot.robot_id} is the leader and will announce.")
+            leader_stop_event = threading.Event()
+            leader_thread = threading.Thread(target=robot.broadcast_leader, args=(leader_stop_event,))
+            leader_thread.start()
+            
+            # Let the leader announce for a short time, then stop
+            time.sleep(3)
+            leader_stop_event.set()
+            leader_thread.join()
+            
+            print(f"Joystick notified: Robot {robot.robot_id} is the leader.")
             notify_joystick_of_leader(robot)
             break
-
-# Create robots based on discovered_robots but generate ElectionID here
-robots = [Robot() for i, _ in enumerate(discovered_robots)]
-
-# Run the simulation
-simulate_leader_election()
