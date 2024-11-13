@@ -29,10 +29,19 @@ class Device:
 
     def create_broadcast_message(self):
         return f"""ID: {self.id}
-DeviceType: {self.device_type}
-IP: {self.ip}
-Status: {self.status}
-Role: {self.role}"""
+        DeviceType: {self.device_type}
+        IP: {self.ip}
+        Status: {self.status}
+        Role: {self.role}"""
+    
+    def object_representation(self):
+        return {
+            'ID': self.id,
+            'DeviceType': self.device_type,
+            'IP': self.ip,
+            'Status': self.status,
+            'Role': self.role
+        }
 
 # Function to broadcast a message
 def broadcast(broadcast_message, stop_event):
@@ -97,7 +106,7 @@ def discover_neighbouring_devices():
     BROADCAST_MESSAGE = device.create_broadcast_message()
     
     discovered_devices = []  # Will contain both robots and joysticks
-
+    discovered_devices.push(device.object_representation())
     lock = threading.Lock()
     stop_event = threading.Event()
 
