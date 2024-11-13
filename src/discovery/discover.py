@@ -106,7 +106,7 @@ def discover_neighbouring_devices():
     BROADCAST_MESSAGE = device.create_broadcast_message()
     
     discovered_devices = []  # Will contain both robots and joysticks
-    discovered_devices.push(device.object_representation())
+    discovered_devices.append(device.object_representation())
     lock = threading.Lock()
     stop_event = threading.Event()
 
