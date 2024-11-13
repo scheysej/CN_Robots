@@ -39,13 +39,12 @@ class Robot:
         self.received_ids[message["RobotID"]] = message["ElectionID"]
 
     def decide_leader(self):
-        #Decide the leader based on the highest ElectionID received.
-        #all_ids = {self.id: self.election_id, **self.received_ids}
-        leader_id = max(self.election_id)
+        # Decide the leader based on the highest ElectionID received, including its own.
+        all_ids = {self.id: self.election_id, **self.received_ids}
+        leader_id = max(all_ids, key=all_ids.get)
         
         if leader_id == self.id:
             self.is_leader = True
-            return self.id
         return leader_id
 
     def announce_leader(self, robots):
