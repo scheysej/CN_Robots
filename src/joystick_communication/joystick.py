@@ -20,7 +20,7 @@ class KeyboardController:
         self.status = "Active"
         self.role = "Controller"
         self.leader_ip = None
-        self.leader_port = 5005
+        self.leader_port = 65009
         self.leader_id = None
         
     def get_local_ip(self):

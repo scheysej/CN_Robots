@@ -7,12 +7,24 @@ Instructor: Dr. Utayba Mohammad
 
 import os
 import json
+import glob
+
+def find_project_root():
+    """Find the CN_Robots directory"""
+    home = os.path.expanduser("~")
+    cn_robots = glob.glob(f"{home}/**/CN_Robots", recursive=True)
+    if not cn_robots:
+        raise Exception("CN_Robots directory not found")
+    return cn_robots[0]
+
+def find_keyboard_device():
+    """Check for keyboard presence"""
+    keyboard_devices = glob.glob("/dev/input/by-id/*kbd*")
+    return bool(keyboard_devices)
 
 def get_device_identity():
-    """
-    Get or create a persistent device identity using the Raspberry Pi's serial number.
-    """
-    identity_file = "/home/pi/device_identity.json"
+    project_root = find_project_root()
+    identity_file = os.path.join(project_root, "device_identity.json")
     
     if os.path.exists(identity_file):
         with open(identity_file, 'r') as f:
@@ -24,26 +36,21 @@ def get_device_identity():
             for line in f:
                 if line.startswith('Serial'):
                     serial = line.split(':')[1].strip()
-                    # Use last 6 digits of serial as device ID
                     device_id = int(serial[-6:], 16)
                     break
     except:
         raise Exception("Could not read Raspberry Pi serial number")
     
-    # Determine device type based on connected hardware or configuration file
     device_type = "Robot"
-    try:
-        # Check for joystick hardware connection
-        if os.path.exists("/dev/input/js0"):
-            device_type = "Joystick"
-    except:
-        pass
+    if find_keyboard_device():
+        device_type = "Keyboard"
     
     identity = {
         'id': device_id,
         'type': device_type,
         'serial': serial
     }
+    
     with open(identity_file, 'w') as f:
         json.dump(identity, f)
     
