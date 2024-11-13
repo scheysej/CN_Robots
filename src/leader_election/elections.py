@@ -37,6 +37,7 @@ class Robot:
     def receive_broadcast(self, message):
         #Receive ElectionID from another robot and store it.
         self.received_ids[message["RobotID"]] = message["ElectionID"]
+        print(f"Robot {self.id} received ElectionID {message['ElectionID']} from Robot {message['RobotID']}")
 
     def decide_leader(self):
         # Decide the leader based on the highest ElectionID received, including its own.
@@ -59,10 +60,6 @@ class Robot:
 
     def broadcast_leader(self, stop_event, robots):
         #Broadcast that this robot is the leader to all others until acknowledged.
-        leader_announcement = {
-            "LeaderID": self.id
-        }
-
         while not stop_event.is_set():
             print(f"Leader Robot {self.id} broadcasting that it is the leader.")
             for robot in robots:
@@ -72,14 +69,13 @@ class Robot:
 
 def notify_joystick_of_leader(leader_robot):
     """Notify joystick of the elected leader."""
-    return {
+    leader_info = {
         'LEADER_IP': leader_robot.ip,
         'LEADER_ID': leader_robot.id
     }
+    print("Joystick notified of leader:", leader_info)
+    return leader_info
     
-    # Write leader information to a file that joystick.py can read
-   # with open('leader_info.txt', 'w') as f:
-     #   f.write(f"{leader_info['LEADER_IP']}\n{leader_info['LEADER_ID']}")
 
 def simulate_leader_election(devices):
     # Create robots based on discovered_robots but generate ElectionID here
@@ -94,6 +90,7 @@ def simulate_leader_election(devices):
 
     # Initialize each robot and start broadcasting on a separate thread
     for robot in robots:
+        print(f"Starting broadcast for Robot {robot.id} with ElectionID {robot.election_id}")
         thread = threading.Thread(target=robot.broadcast, args=(stop_event,robots))
         threads.append(thread)
         thread.start()
@@ -107,23 +104,28 @@ def simulate_leader_election(devices):
         thread.join()
     
     # Consensus Protocol: Decide and announce leader
+    leader_id = None
     for robot in robots:
-        leader_id = robot.decide_leader()
-        print(f"Robot {robot.id} thinks Robot {leader_id} should be the leader.")
+        potential_leader_id = robot.decide_leader()
+        print(f"Robot {robot.id} thinks Robot {potential_leader_id} should be the leader.")
+        if robot.is_leader:
+            leader_id = robot.id
+            break
 
     # Leader Announcement
-    for robot in robots:
-        if robot.is_leader:
-            print(f"Robot {robot.robot_id} is the leader and will announce.")
-            leader_stop_event = threading.Event()
-            leader_thread = threading.Thread(target=robot.broadcast_leader, args=(leader_stop_event,robots))
-            leader_thread.start()
-            
-            # Let the leader announce for a short time, then stop
-            time.sleep(3)
-            leader_stop_event.set()
-            leader_thread.join()
-            
-            print(f"Joystick notified: Robot {robot.robot_id} is the leader.")
-            notify_joystick_of_leader(robot)
-            break
+    if leader_id is not None:
+        for robot in robots:
+            if robot.is_leader:
+                print(f"Robot {robot.robot_id} is the leader and will announce.")
+                leader_stop_event = threading.Event()
+                leader_thread = threading.Thread(target=robot.broadcast_leader, args=(leader_stop_event,robots))
+                leader_thread.start()
+                
+                # Let the leader announce for a short time, then stop
+                time.sleep(3)
+                leader_stop_event.set()
+                leader_thread.join()
+                
+                print(f"Joystick notified: Robot {robot.robot_id} is the leader.")
+                notify_joystick_of_leader(robot)
+                break
