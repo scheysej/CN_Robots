@@ -86,8 +86,8 @@ def simulate_leader_election(devices):
     # robots = [Robot() for _ in enumerate(devices)]
     robots = []
     for robot in devices:
-        if robot.DeviceType is 'Robot':
-            robots.append(Robot(robot.ID, robot.Status, robot.IP, robot.DeviceType))
+        if robot['DeviceType'] is 'Robot':
+            robots.append(Robot(robot['ID'], robot['Status'], robot['IP'], robot['DeviceType']))
     
     stop_event = threading.Event()  # Event to signal the end of broadcasting
     threads = []
