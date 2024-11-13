@@ -107,6 +107,7 @@ def discover_neighbouring_devices():
     
     discovered_devices = []  # Will contain both robots and joysticks
     discovered_devices.append(device.object_representation())
+    
     lock = threading.Lock()
     stop_event = threading.Event()
 

@@ -11,9 +11,12 @@ import time
 from utils.device_identity import get_device_identity
 
 class Robot:
-    def __init__(self, robot_id):
+    def __init__(self, robot_id, status, ip, type):
         self.robot_id = robot_id
-        self.id, _ = get_device_identity()
+        self.status = status
+        self.ip = ip
+        self.device_type = type
+        # self.id, _ = get_device_identity()
         self.election_id = random.randint(1, 100)
         self.is_leader = False
         self.received_ids = {}
@@ -55,7 +58,7 @@ class Robot:
         #Receive the leader announcement and recognize the leader.
         print(f"Robot {self.id} recognizes Robot {leader_id} as the leader.")
 
-    def broadcast_leader(self, stop_event):
+    def broadcast_leader(self, stop_event, robots):
         #Broadcast that this robot is the leader to all others until acknowledged.
         leader_announcement = {
             "LeaderID": self.id
@@ -80,8 +83,12 @@ def notify_joystick_of_leader(leader_robot):
 
 def simulate_leader_election(devices):
     # Create robots based on discovered_robots but generate ElectionID here
-    robots = [Robot() for _ in enumerate(devices)]
-
+    # robots = [Robot() for _ in enumerate(devices)]
+    robots = []
+    for robot in devices:
+        if robot.DeviceType is 'Robot':
+            robots.append(Robot(robot.ID, robot.Status, robot.IP, robot.DeviceType))
+    
     stop_event = threading.Event()  # Event to signal the end of broadcasting
     threads = []
 
@@ -109,7 +116,7 @@ def simulate_leader_election(devices):
         if robot.is_leader:
             print(f"Robot {robot.robot_id} is the leader and will announce.")
             leader_stop_event = threading.Event()
-            leader_thread = threading.Thread(target=robot.broadcast_leader, args=(leader_stop_event,))
+            leader_thread = threading.Thread(target=robot.broadcast_leader, args=(leader_stop_event,robots))
             leader_thread.start()
             
             # Let the leader announce for a short time, then stop
