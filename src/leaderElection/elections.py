@@ -6,16 +6,18 @@ Instructor: Dr. Utayba Mohammad
 """
 
 import threading
+import random
 import time
 from discovery import discovered_robots  # Assuming discovery.py is in the same directory
 from utils.device_identity import get_device_identity
 # Create robots based on discovered_robots but generate ElectionID here
-robots = [Robot() for i, _ in enumerate(discovered_robots)]
+robots = [Robot(i) for i, _ in enumerate(discovered_robots)]
 
 class Robot:
-    def __init__(self):
+    def __init__(self, robot_id):
+        self.robot_id = robot_id
         self.id, _ = get_device_identity()
-        self.election_id = self.id  # Use device ID as election ID
+        self.election_id = random.randint(1, 100)
         self.is_leader = False
         self.received_ids = {}
 
