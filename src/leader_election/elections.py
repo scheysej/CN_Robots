@@ -117,7 +117,7 @@ def simulate_leader_election(devices):
     if leader_id is not None:
         for robot in robots:
             if robot.is_leader:
-                print(f"Robot {robot.robot_id} is the leader and will announce.")
+                print(f"Robot {robot.id} is the leader and will announce.")
                 leader_stop_event = threading.Event()
                 leader_thread = threading.Thread(target=robot.broadcast_leader, args=(leader_stop_event,robots))
                 leader_thread.start()
@@ -127,6 +127,6 @@ def simulate_leader_election(devices):
                 leader_stop_event.set()
                 leader_thread.join()
                 
-                print(f"Joystick notified: Robot {robot.robot_id} is the leader.")
+                print(f"Joystick notified: Robot {robot.id} is the leader.")
                 notify_joystick_of_leader(robot)
                 break
