@@ -11,6 +11,7 @@ import json
 import keyboard
 from hashlib import sha256
 from utils.device_identity import get_device_identity
+import threading
 
 class KeyboardController:
     def __init__(self, leader_ip=None, leader_id=None):
@@ -24,6 +25,8 @@ class KeyboardController:
         self.leader_id = leader_id
         self.last_x_command = "center"
         self.last_y_command = "stop"
+        self.listen_port = 65010
+        self.stop_event = threading.Event()
         
     def get_local_ip(self):
         with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
@@ -84,6 +87,26 @@ class KeyboardController:
         except Exception as e:
             print(f"Error sending message: {e}")
 
+    def start_listener(self):
+        """Start listening for responses from leader."""
+        with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as sock:
+            sock.bind(('', self.listen_port))
+            sock.settimeout(1)  # 1 second timeout
+            print(f"Listening for responses on port {self.listen_port}")
+            
+            while not self.stop_event.is_set():
+                try:
+                    data, addr = sock.recvfrom(1024)
+                    message = json.loads(data.decode())
+                    print(f"Received response from {addr}: {message}")
+                    
+                except socket.timeout:
+                    continue
+                except json.JSONDecodeError:
+                    print("Received malformed JSON message")
+                except Exception as e:
+                    print(f"Error in listener: {e}")
+
     def run(self):
         print("Starting keyboard controller. Use arrow keys to control robots.")
         print("Press Ctrl+C to exit.")
@@ -93,6 +116,9 @@ class KeyboardController:
             return
         
         print(f"Connected to leader at {self.leader_ip}")
+
+        listener_thread = threading.Thread(target=self.start_listener, daemon=True)
+        listener_thread.start()
 
         while True:
             try:
@@ -107,6 +133,7 @@ class KeyboardController:
                 
             except KeyboardInterrupt:
                 print("\nKeyboard controller stopped.")
+                self.stop_event.set()  # stop listener thread
                 break
             except Exception as e:
                 print(f"Error in main loop: {e}")
