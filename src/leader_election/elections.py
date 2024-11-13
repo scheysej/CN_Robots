@@ -88,6 +88,7 @@ def simulate_leader_election(devices):
     stop_event = threading.Event()  # Event to signal the end of broadcasting
     threads = []
 
+    print("Robots is", robots)
     # Initialize each robot and start broadcasting on a separate thread
     for robot in robots:
         print(f"Starting broadcast for Robot {robot.id} with ElectionID {robot.election_id}")
