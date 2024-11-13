@@ -129,4 +129,5 @@ def simulate_leader_election(devices):
                 
                 print(f"Joystick notified: Robot {robot.id} is the leader.")
                 notify_joystick_of_leader(robot)
-                break
+                return leader_id
+            
