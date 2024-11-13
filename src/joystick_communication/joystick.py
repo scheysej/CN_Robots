@@ -13,15 +13,15 @@ from hashlib import sha256
 from utils.device_identity import get_device_identity
 
 class KeyboardController:
-    def __init__(self):
+    def __init__(self, leader_ip=None, leader_id=None):
         self.id, _ = get_device_identity()
         self.device_type = "Keyboard"
         self.ip = self.get_local_ip()
         self.status = "Active"
         self.role = "Controller"
-        self.leader_ip = None
+        self.leader_ip = leader_ip
         self.leader_port = 65009
-        self.leader_id = None
+        self.leader_id = leader_id
         self.last_x_command = "center"
         self.last_y_command = "stop"
         
@@ -29,18 +29,6 @@ class KeyboardController:
         with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
             s.connect(("8.8.8.8", 80))
             return s.getsockname()[0]
-
-    def wait_for_leader(self):
-        while True:
-            try:
-                with open('leader_info.txt', 'r') as f:
-                    self.leader_ip = f.readline().strip()
-                    self.leader_id = f.readline().strip()
-                if self.leader_ip and self.leader_id:
-                    break
-            except FileNotFoundError:
-                print("Waiting for leader election to complete...")
-                time.sleep(1)
 
     def read_keyboard_input(self):
         x_command = "center"  # default steering position
@@ -100,7 +88,10 @@ class KeyboardController:
         print("Starting keyboard controller. Use arrow keys to control robots.")
         print("Press Ctrl+C to exit.")
         
-        self.wait_for_leader()
+        if not self.leader_ip or not self.leader_id:
+            print("Error: No leader information provided")
+            return
+        
         print(f"Connected to leader at {self.leader_ip}")
 
         while True:

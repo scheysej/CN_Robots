@@ -17,8 +17,13 @@ def main():
     
     # If this is a keyboard controller, start the control interface
     if device_type == "Keyboard":
-        controller = KeyboardController()
-        controller.run()
+        # find leader's IP from devices list
+        leader_ip = next((device['IP'] for device in devices if device['ID'] == leader), None)
+        if leader_ip:
+            controller = KeyboardController(leader_ip=leader_ip, leader_id=leader)
+            controller.run()
+        else:
+            print("Error: Could not find leader's IP address")
 
 if __name__ == "__main__":
     main()
