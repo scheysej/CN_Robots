@@ -44,8 +44,8 @@ def get_device_identity():
         raise Exception("Could not read Raspberry Pi serial number")
     
     device_type = "Robot"
-    if find_keyboard_device():
-        device_type = "Keyboard"
+    # if find_keyboard_device():
+    #     device_type = "Keyboard"
     
     identity = {
         'id': device_id,
