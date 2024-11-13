@@ -12,7 +12,7 @@ def main():
     print(f"Discovered devices: {devices}")
     
     # Run leader election
-    leader = elections.simulate_leader_election()
+    leader = elections.simulate_leader_election(devices)
     print(f"Elected leader: {leader}")
     
     # If this is a keyboard controller, start the control interface

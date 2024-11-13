@@ -8,10 +8,7 @@ Instructor: Dr. Utayba Mohammad
 import threading
 import random
 import time
-from discovery import discovered_robots  # Assuming discovery.py is in the same directory
 from utils.device_identity import get_device_identity
-# Create robots based on discovered_robots but generate ElectionID here
-robots = [Robot(i) for i, _ in enumerate(discovered_robots)]
 
 class Robot:
     def __init__(self, robot_id):
@@ -81,7 +78,10 @@ def notify_joystick_of_leader(leader_robot):
    # with open('leader_info.txt', 'w') as f:
      #   f.write(f"{leader_info['LEADER_IP']}\n{leader_info['LEADER_ID']}")
 
-def simulate_leader_election():
+def simulate_leader_election(devices=devices):
+    # Create robots based on discovered_robots but generate ElectionID here
+    robots = [Robot() for i, _ in enumerate(devices)
+
     stop_event = threading.Event()  # Event to signal the end of broadcasting
     threads = []
 
