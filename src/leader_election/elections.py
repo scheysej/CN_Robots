@@ -80,7 +80,7 @@ def notify_joystick_of_leader(leader_robot):
 
 def simulate_leader_election(devices):
     # Create robots based on discovered_robots but generate ElectionID here
-    robots = [Robot() for i, _ in enumerate(devices)]
+    robots = [Robot() for _ in enumerate(devices)]
 
     stop_event = threading.Event()  # Event to signal the end of broadcasting
     threads = []
