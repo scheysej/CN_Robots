@@ -32,10 +32,10 @@ class Robot:
 
     def broadcast(self, stop_event):
         #Simulate broadcasting the robot's ElectionID to all other robots.
-        broadcast_message = {
-            "RobotID": self.id,
-            "ElectionID": self.election_id
-        }
+        broadcast_message = f'''
+            RobotID: {self.id}
+            ElectionID: {self.election_id}
+        '''
 
         with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as broadcast_socket:
             broadcast_socket.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
@@ -133,31 +133,32 @@ def simulate_leader_election(devices):
     robot = None
 
     # Robot creates its own election id
-    for robot in devices:
+    for device in devices:
         # Loop through all the devices in the fleet, if the device is a robot and has the same ip address (essentially)
         # finds the raspberry pi in the list of all the devices
-        if robot['DeviceType'] == 'Robot' and robot['IP'] == get_local_ip():
-            robot= (Robot(robot['ID'], robot['Status'], robot['IP'], robot['DeviceType'], devices)) # Creates the election id and defines the robot
-    
+        if (device['DeviceType'] == 'Robot') and (device['IP'] == get_local_ip()):
+             robot = Robot(device['ID'], device['Status'], device['IP'], device['DeviceType'], devices) # Creates the election id and defines the robot
+
     stop_event = threading.Event()  # Event to signal the end of broadcasting
     threads = []
 
      # Initialize each robot and start broadcasting on a separate thread
     print(f"I am starting broadcast [{robot.id}] with my ElectionID of {robot.election_id}")
 
-    electionid_broadcast_thread = threading.Thread(target=robot.broadcast, args=(stop_event))
-    electionid_listen_thread = threading.Thread(target=robot.listen, args=(stop_event))
+    electionid_broadcast_thread = threading.Thread(target=robot.broadcast, args=(stop_event,))
+    electionid_listen_thread = threading.Thread(target=robot.listen, args=(stop_event,))
     
-    threads.append(electionid_broadcast_thread, electionid_listen_thread)
-    thread.start()
+    electionid_broadcast_thread.start()
+    electionid_listen_thread.start()
     
     # Allow broadcasting for a brief period, then stop to determine leader
     time.sleep(10)
     stop_event.set()  # Stop all broadcasting
 
     # Wait for all threads to complete
-    for thread in threads:
-        thread.join()
+
+    electionid_broadcast_thread.join()
+    electionid_listen_thread.join()
 
     print("The end :)")
     
