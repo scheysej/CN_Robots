@@ -1,5 +1,4 @@
-"""
-Author: Andre Price
+"""Author: Andre Price
 Date: 11-11-24
 Course: ELEE 4680
 Instructor: Dr. Utayba Mohammad
@@ -28,6 +27,7 @@ class Robot:
         self.election_id = random.randint(1, 100)
         self.is_leader = False
         self.received_robot_ids = []
+        self.received_election_ids = []
         self.all_devices = devices
 
     def broadcast(self, stop_event):
@@ -63,22 +63,25 @@ class Robot:
                     listen_socket.settimeout(1) 
                     data, addr = listen_socket.recvfrom(1024)
                     sender_ip = addr[0]
-                    
+
                     # Ignore messages from itself
                     if sender_ip == get_local_ip():
                         continue  
 
+                    #print("Received ", data)
+                    #print(self.all_devices)
 
-                    data = data.decode()
-                    
-                    print("Received ", data)
-            
-                    # with lock:
-                        # Avoid duplicate devices with the same ID
-                        # if not any(device['ID'] == device_info['ID'] for device in discovered_devices):
-                        #     discovered_devices.append(device_info)
-                        #     print(f"Discovered device: {device_info}")
+                    message = data.decode().strip().splitlines()
+                    robot_id = message[0].split(':')[1].strip()
+                    election_id = message[1].split(':')[1].strip()
 
+                    # for received_robot in self.election_id:
+                    self.received_election_ids({
+                        robot_id: robot_id,
+                        election_id: election_id
+                    })
+
+                    # Make it so it checks to make sure tht the election id isnt already in the receivd election ids
                 except socket.timeout:
                     continue
 
@@ -137,8 +140,8 @@ def simulate_leader_election(devices):
         # Loop through all the devices in the fleet, if the device is a robot and has the same ip address (essentially)
         # finds the raspberry pi in the list of all the devices
         if (device['DeviceType'] == 'Robot') and (device['IP'] == get_local_ip()):
-             robot = Robot(device['ID'], device['Status'], device['IP'], device['DeviceType'], devices) # Creates the election id and defines the robot
-
+            robot= Robot(device['ID'], device['Status'], device['IP'], device['DeviceType'], devices) # Creates the election id and defines the robot
+    
     stop_event = threading.Event()  # Event to signal the end of broadcasting
     threads = []
 
@@ -150,18 +153,18 @@ def simulate_leader_election(devices):
     
     electionid_broadcast_thread.start()
     electionid_listen_thread.start()
+   
     
     # Allow broadcasting for a brief period, then stop to determine leader
     time.sleep(10)
     stop_event.set()  # Stop all broadcasting
 
     # Wait for all threads to complete
-
     electionid_broadcast_thread.join()
     electionid_listen_thread.join()
 
     print("The end :)")
-    
+    return  "14843699" 
     # # Consensus Protocol: Decide and announce leader
     # leader_id = None
     # for robot in robots:
@@ -188,4 +191,3 @@ def simulate_leader_election(devices):
     #             print(f"Joystick notified: Robot {robot.id} is the leader.")
     #             notify_joystick_of_leader(robot)
     #             return leader_id
-            
