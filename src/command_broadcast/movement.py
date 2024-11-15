@@ -90,7 +90,7 @@ def steer(angle):
 	if angle<LEFT :
 		angle=LEFT
 	pwm.set_pwm(servo_pin, 0, angle)
-
+'''
 steer(CENTER)	
 forward()
 time.sleep(2)  
@@ -121,3 +121,4 @@ steer(CENTER)
 
 time.sleep(2)
 pwm.set_pwm(15, 0, 0)
+'''

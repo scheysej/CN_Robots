@@ -91,7 +91,7 @@ class KeyboardController:
         """Start listening for responses from leader."""
         with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as sock:
             sock.bind(('', self.listen_port))
-            sock.settimeout(1)  # 1 second timeout
+            #sock.settimeout(1)  # 1 second timeout
             print(f"Listening for responses on port {self.listen_port}")
             
             while not self.stop_event.is_set():
@@ -129,7 +129,7 @@ class KeyboardController:
                     message = self.create_message(x_command, y_command)
                     self.send_to_leader(message)
 
-                time.sleep(0.1)
+                #time.sleep(0.1)
                 
             except KeyboardInterrupt:
                 print("\nKeyboard controller stopped.")
@@ -137,7 +137,7 @@ class KeyboardController:
                 break
             except Exception as e:
                 print(f"Error in main loop: {e}")
-                time.sleep(1)
+                #time.sleep(1)
 
 if __name__ == "__main__":
     # run sudo for keyboard access
