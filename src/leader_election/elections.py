@@ -26,6 +26,7 @@ class Robot:
         self.device_type = type
         self.election_id = random.randint(1, 100)
         self.is_leader = False
+        self.leader_id = ""
         self.received_robot_ids = []
         self.received_election_ids = []
         self.all_devices = devices
@@ -79,8 +80,8 @@ class Robot:
                     if not any(e["election_id"] == election_id for e in self.received_election_ids):
                         print(self.received_election_ids)
                         self.received_election_ids.append({
-                            "robot_id": robot_id,
-                            "election_id": election_id
+                            "robot_id": str(robot_id),
+                            "election_id": str(election_id)
                         })
                         print(f"I received ElectionID {election_id} from Robot {robot_id}")
                     else:
@@ -116,7 +117,7 @@ class Robot:
         
         #if leader_id == self.id:
         #    self.is_leader = True
-        print(f"The max election id is " + max_election_id + "from " + leader_id )
+        print(f"The max election id is " + str(max_election_id) + "from " + str(leader_id) )
         return leader_id
 
     def announce_leader(self, robots):
@@ -186,12 +187,10 @@ def simulate_leader_election(devices):
 
     potential_leader_id = robot.decide_leader()
     print(f"Robot {robot.id} thinks Robot {potential_leader_id} should be the leader.")
-    if robot.is_leader:
-        leader_id = robot.id
+    
+    robot.leader_id = potential_leader_id
 
-
-    print("The end :)")
-    return  "14843699" 
+    return robot.leader_id 
   
     # # Leader Announcement
     # if leader_id is not None:
