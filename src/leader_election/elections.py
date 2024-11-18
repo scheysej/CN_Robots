@@ -107,7 +107,7 @@ class Robot:
         max_election_id = None
         leader_id = None
         for id in self.received_election_ids:
-            election_id =id["election_id"]
+            election_id =int(id["election_id"])
             robot_id = id["robot_id"]
 
             if max_election_id is None or election_id > max_election_id:
