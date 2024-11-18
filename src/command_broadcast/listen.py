@@ -9,7 +9,6 @@ sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
 
 # Bind the socket to listen on all available interfaces
 sock.bind(("", port))
-
 print(f"Listening for broadcast messages on port {port}...")
 
 try:
