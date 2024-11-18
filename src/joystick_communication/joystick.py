@@ -9,9 +9,14 @@ import socket
 import time
 import json
 from hashlib import sha256
-from utils.device_identity import get_device_identity
+#from utils.device_identity import get_device_identity
 import threading
 from pynput import keyboard
+
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../command_broadcast')))
+import broadcast
 
 class KeyboardController:
     def __init__(self, leader_ip=None, leader_id=None):
@@ -25,7 +30,7 @@ class KeyboardController:
         self.leader_id = leader_id
         self.last_x_command = "center"
         self.last_y_command = "stop"
-        self.listen_port = 65010
+        self.listen_port = 65009
         self.stop_event = threading.Event()
         
         # Initialize the keyboard listener
@@ -107,8 +112,9 @@ class KeyboardController:
             while not self.stop_event.is_set():
                 try:
                     data, addr = sock.recvfrom(1024)
-                    message = json.loads(data.decode())
-                    print(f"Received response from {addr}: {message}")
+                    #message = json.loads(data.decode())
+                    broadcast.broadcast_message(data)
+                    #print(f"Received response from {addr}: {message}")
                 except socket.timeout:
                     continue
                 except json.JSONDecodeError:

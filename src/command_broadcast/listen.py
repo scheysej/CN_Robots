@@ -1,4 +1,5 @@
 import socket
+import json
 import movement
 port = 65010
 
@@ -15,18 +16,20 @@ try:
 	while True:
 		# Receive broadcast message
 		data, addr = sock.recvfrom(1024)  # Buffer size of 1024 bytes
-		print(f"Received message: {data.decode()} from {addr}")
-		if data.decode() == "forward":
+		message = json.loads(data.decode())
+		
+		if message['movement_y'] == "forward":
 			movement.forward()
-		elif data.decode() == "stop":
+		elif message['movement_y'] == "stop":
 			movement.stopcar()
-		elif data.decode() == "backward":
+		elif message['movement_y'] == "backward":
 			movement.backward()
-		elif data.decode() == "left":
+			
+		if message['movement_x'] == "left":
 			movement.steer(movement.LEFT)
-		elif data.decode() == "right":
+		elif message['movement_x'] == "right":
 			movement.steer(movement.RIGHT)
-		elif data.decode() == "center":
+		elif message['movement_x'] == "center":
 			movement.steer(movement.CENTER)
 except KeyboardInterrupt:
 	print("\nListener stopped by user.")
