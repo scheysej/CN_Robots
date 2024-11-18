@@ -183,12 +183,11 @@ def simulate_leader_election(devices):
 
     # Consensus Protocol: Decide and announce leader
     leader_id = None
-    for potentialLeaders in robot.received_election_ids:
-        potential_leader_id = potentialLeaders.decide_leader()
-        print(f"Robot {robot.id} thinks Robot {potential_leader_id} should be the leader.")
-        if potentialLeaders.is_leader:
-            leader_id = robot.id
-            break
+
+    potential_leader_id = robot.decide_leader()
+    print(f"Robot {robot.id} thinks Robot {potential_leader_id} should be the leader.")
+    if robot.is_leader:
+        leader_id = robot.id
 
 
     print("The end :)")
