@@ -8,7 +8,7 @@
 
 from __future__ import division
 import time
-# Import the PCA9685 module.
+Import the PCA9685 module.
 import Adafruit_PCA9685
 import RPi.GPIO as GPIO
 # Initialise the PCA9685 using the default address (0x40).
@@ -26,12 +26,12 @@ LEFT = 385 #Steer servo car turn left
 move_speed = 4000  # Max pulse length out of 4096
 
 # Set frequency to 60hz, good for servos.
-pwm.set_pwm_freq(60)
-pwm.set_pwm(servo_pin, 0, LEFT)
+#pwm.set_pwm_freq(60)
+#pwm.set_pwm(servo_pin, 0, LEFT)
 time.sleep(1)
-pwm.set_pwm(servo_pin, 0, RIGHT)
+#pwm.set_pwm(servo_pin, 0, RIGHT)
 time.sleep(1)
-pwm.set_pwm(servo_pin, 0, CENTER)
+#pwm.set_pwm(servo_pin, 0, CENTER)
 
 
 GPIO.setmode(GPIO.BCM) # GPIO number  in BCM mode

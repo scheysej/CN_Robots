@@ -13,7 +13,7 @@ def main():
     devices = discover.discover_neighbouring_devices()
     print(f"Discovered devices: {devices}")
     
-    time.sleep(10) #This makes it so that messages sent from discovery dont try to get interpreted as elections
+    # time.sleep(10) #This makes it so that messages sent from discovery dont try to get interpreted as elections
 
     # Run leader election
     leader = elections.simulate_leader_election(devices)
@@ -30,7 +30,7 @@ def main():
         else:
             print("Error: Could not find leader's IP address")
     elif device_type == "Robot":
-        listen()
+        listen.listen_for_commands()
 
 if __name__ == "__main__":
     main()
