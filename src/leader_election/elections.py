@@ -34,6 +34,7 @@ class Robot:
     def broadcast(self, stop_event):
         #Simulate broadcasting the robot's ElectionID to all other robots.
         broadcast_message = f'''
+            Type: ELECTION
             RobotID: {self.id}
             ElectionID: {self.election_id}
         '''
@@ -73,19 +74,21 @@ class Robot:
                     #print(self.all_devices)
 
                     message = data.decode().strip().splitlines()
-                    robot_id = message[0].split(':')[1].strip()
-                    election_id = message[1].split(':')[1].strip()
 
-                    # for received_robot in self.election_id:
-                    if not any(e["election_id"] == election_id for e in self.received_election_ids):
-                        print(self.received_election_ids)
-                        self.received_election_ids.append({
-                            "robot_id": str(robot_id),
-                            "election_id": str(election_id)
-                        })
-                        print(f"I received ElectionID {election_id} from Robot {robot_id}")
-                    else:
-                        print(f"Robot {self.id} ignored duplicate ElectionID {election_id} from Robot {robot_id}")
+                    if message[0].split(':')[1].strip() == "ELECTION":
+                        robot_id = message[1].split(':')[1].strip()
+                        election_id = message[2].split(':')[1].strip()
+
+                        # for received_robot in self.election_id:
+                        if not any(e["election_id"] == election_id for e in self.received_election_ids):
+                            print(self.received_election_ids)
+                            self.received_election_ids.append({
+                                "robot_id": str(robot_id),
+                                "election_id": str(election_id)
+                            })
+                            print(f"I received ElectionID {election_id} from Robot {robot_id}")
+                        else:
+                            print(f"Robot {self.id} ignored duplicate ElectionID {election_id} from Robot {robot_id}")
 
                     # Function above makes it so that it checks to make sure that the election id isnt already in the received election ids
                 except socket.timeout:
