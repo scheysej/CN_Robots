@@ -77,7 +77,7 @@ class Robot:
 
                     # for received_robot in self.election_id:
                     if not any(e['election_id'] == election_id for e in self.received_election_ids):
-                        self.received_election_ids({
+                        self.received_election_ids.append({
                             robot_id: robot_id,
                             election_id: election_id
                         })
