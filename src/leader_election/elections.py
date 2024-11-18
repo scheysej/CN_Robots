@@ -46,7 +46,7 @@ class Robot:
                 broadcast_socket.sendto(broadcast_message.encode(), (BROADCAST_ADDR, PORT))
                 time.sleep(1)
 
-            print("Broadcasting myself as leader has stopped")
+            print("Broadcasting my election ID has stopped")
 
             time.sleep(1) 
 
@@ -76,19 +76,25 @@ class Robot:
                     election_id = message[1].split(':')[1].strip()
 
                     # for received_robot in self.election_id:
-                    if not any(e['election_id'] == election_id for e in self.received_election_ids):
+                    if not any(e["election_id"] == election_id for e in self.received_election_ids):
+                        print(self.received_election_ids)
                         self.received_election_ids.append({
-                            robot_id: robot_id,
-                            election_id: election_id
+                            "robot_id": robot_id,
+                            "election_id": election_id
                         })
-                        print(f"Robot {self.id} received ElectionID {election_id} from Robot {robot_id}")
+                        print(f"I received ElectionID {election_id} from Robot {robot_id}")
                     else:
                         print(f"Robot {self.id} ignored duplicate ElectionID {election_id} from Robot {robot_id}")
 
                     # Function above makes it so that it checks to make sure that the election id isnt already in the received election ids
                 except socket.timeout:
                     continue
-
+            
+            # Adding myself to received election ids
+            self.received_election_ids.append({
+                "robot_id": self.id,
+                "election_id": self.election_id
+            })
             print("Listening has stopped")
 
     def receive_broadcast(self, message):
@@ -98,11 +104,19 @@ class Robot:
 
     def decide_leader(self):
         # Decide the leader based on the highest ElectionID received, including its own.
-        all_ids = {self.id: self.election_id, **self.received_ids}
-        leader_id = max(all_ids, key=all_ids.get)
+        max_election_id = None
+        leader_id = None
+        for id in self.received_election_ids:
+            election_id =id["election_id"]
+            robot_id = id["robot_id"]
+
+            if max_election_id is None or election_id > max_election_id:
+                max_election_id = election_id
+                leader_id = robot_id
         
-        if leader_id == self.id:
-            self.is_leader = True
+        #if leader_id == self.id:
+        #    self.is_leader = True
+        print(f"The max election id is " + max_election_id + "from " + leader_id )
         return leader_id
 
     def announce_leader(self, robots):
@@ -167,17 +181,19 @@ def simulate_leader_election(devices):
     electionid_broadcast_thread.join()
     electionid_listen_thread.join()
 
+    # Consensus Protocol: Decide and announce leader
+    leader_id = None
+    for potentialLeaders in robot.received_election_ids:
+        potential_leader_id = potentialLeaders.decide_leader()
+        print(f"Robot {robot.id} thinks Robot {potential_leader_id} should be the leader.")
+        if potentialLeaders.is_leader:
+            leader_id = robot.id
+            break
+
+
     print("The end :)")
     return  "14843699" 
-    # # Consensus Protocol: Decide and announce leader
-    # leader_id = None
-    # for robot in robots:
-    #     potential_leader_id = robot.decide_leader()
-    #     print(f"Robot {robot.id} thinks Robot {potential_leader_id} should be the leader.")
-    #     if robot.is_leader:
-    #         leader_id = robot.id
-    #         break
-
+  
     # # Leader Announcement
     # if leader_id is not None:
     #     for robot in robots:
