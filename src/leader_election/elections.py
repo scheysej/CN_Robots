@@ -117,7 +117,7 @@ class Robot:
         
         #if leader_id == self.id:
         #    self.is_leader = True
-        print(f"The max election id is " + str(max_election_id) + "from " + str(leader_id) )
+        print(f"The max election id is " + str(max_election_id) + " from " + str(leader_id) )
         return leader_id
 
     def announce_leader(self, robots):
