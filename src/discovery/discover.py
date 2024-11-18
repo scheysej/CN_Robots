@@ -17,7 +17,7 @@ def get_local_ip():
         return s.getsockname()[0]
 
 LOCAL_IP_ADDRESS = get_local_ip()
-BROADCAST_ADDR = '255.255.255.255'     # Define the broadcast address and port
+BROADCAST_ADDR = '255.255.255.255' # Define the broadcast address and port
 PORT = 65009
 
 class Device:
@@ -28,7 +28,8 @@ class Device:
         self.role = "Undecided"
 
     def create_broadcast_message(self):
-        return f"""ID: {self.id}
+        return f"""Type: DISCOVER
+        ID: {self.id}
         DeviceType: {self.device_type}
         IP: {self.ip}
         Status: {self.status}
@@ -79,20 +80,23 @@ def listen(discovered_devices, lock, stop_event):
 
                 message = data.decode().strip().splitlines()
                 
-                # Parse the broadcast message into a dictionary
-                device_info = {
-                    'ID': int(message[0].split(":")[1].strip()),
-                    'DeviceType': message[1].split(":")[1].strip(),
-                    'IP': message[2].split(":")[1].strip(),
-                    'Status': message[3].split(":")[1].strip(),
-                    'Role': message[4].split(":")[1].strip()
-                }
+                type = message[0].split(":")[1].strip()
                 
-                with lock:
-                    # Avoid duplicate devices with the same ID
-                    if not any(device['ID'] == device_info['ID'] for device in discovered_devices):
-                        discovered_devices.append(device_info)
-                        print(f"Discovered device: {device_info}")
+                if type == 'DISCOVER':
+                    # Parse the broadcast message into a dictionary
+                    device_info = {
+                        'ID': int(message[1].split(":")[1].strip()),
+                        'DeviceType': message[2].split(":")[1].strip(),
+                        'IP': message[3].split(":")[1].strip(),
+                        'Status': message[4].split(":")[1].strip(),
+                        'Role': message[5].split(":")[1].strip()
+                    }
+                    
+                    with lock:
+                        # Avoid duplicate devices with the same ID
+                        if not any(device['ID'] == device_info['ID'] for device in discovered_devices):
+                            discovered_devices.append(device_info)
+                            print(f"Discovered device: {device_info}")
 
             except socket.timeout:
                 continue
