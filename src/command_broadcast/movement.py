@@ -16,7 +16,7 @@ pwm = Adafruit_PCA9685.PCA9685()
  
 servo_pin = 15 #  servo connect to PWM 15
 
-RIGHT = 465 #Steer servo car turn right
+RIGHT = 500 #Steer servo car turn right
 CENTER= 425 #Steer servo car go forward
 LEFT = 385 #Steer servo car turn left
 
