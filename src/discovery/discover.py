@@ -119,7 +119,7 @@ def discover_neighbouring_devices():
     listen_thread.start()
 
     # Run for 20 seconds, then stop both threads
-    time.sleep(5)
+    time.sleep(10)
     stop_event.set()
 
     # Wait for both threads to finish
