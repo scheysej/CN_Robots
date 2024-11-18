@@ -76,10 +76,14 @@ class Robot:
                     election_id = message[1].split(':')[1].strip()
 
                     # for received_robot in self.election_id:
-                    self.received_election_ids({
-                        robot_id: robot_id,
-                        election_id: election_id
-                    })
+                    if not any(e['election_id'] == election_id for e in self.received_election_ids):
+                        self.received_election_ids({
+                            robot_id: robot_id,
+                            election_id: election_id
+                        })
+                        print(f"Robot {self.id} received ElectionID {election_id} from Robot {robot_id}")
+                    else:
+                        print(f"Robot {self.id} ignored duplicate ElectionID {election_id} from Robot {robot_id}")
 
                     # Make it so it checks to make sure tht the election id isnt already in the receivd election ids
                 except socket.timeout:
