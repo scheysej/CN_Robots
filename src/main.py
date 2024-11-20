@@ -2,6 +2,7 @@ from discovery import discover
 from leader_election import elections
 from joystick_communication.joystick import KeyboardController
 from utils.device_identity import get_device_identity
+from command_broadcast import listen
 import time 
 
 def main():
@@ -28,6 +29,8 @@ def main():
             controller.run()  # Start the controller logic
         else:
             print("Error: Could not find leader's IP address")
+    elif device_type == "Robot":
+        listen()
 
 if __name__ == "__main__":
     main()

@@ -9,7 +9,7 @@ import socket
 import time
 import json
 from hashlib import sha256
-#from utils.device_identity import get_device_identity
+from utils.device_identity import get_device_identity
 import threading
 from pynput import keyboard
 
