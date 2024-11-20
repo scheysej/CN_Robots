@@ -1,2 +1,3 @@
 __pycache__/
-device_identity.json
+/device_identity.json
+**/__pycache__/
