@@ -81,14 +81,13 @@ class Robot:
 
                         # for received_robot in self.election_id:
                         if not any(e["election_id"] == election_id for e in self.received_election_ids):
-                            print(self.received_election_ids)
                             self.received_election_ids.append({
                                 "robot_id": str(robot_id),
                                 "election_id": str(election_id)
                             })
                             print(f"I received ElectionID {election_id} from Robot {robot_id}")
                         else:
-                            print(f"Robot {self.id} ignored duplicate ElectionID {election_id} from Robot {robot_id}")
+                            # print(f"Robot {self.id} ignored duplicate ElectionID {election_id} from Robot {robot_id}")
 
                     # Function above makes it so that it checks to make sure that the election id isnt already in the received election ids
                 except socket.timeout:
@@ -151,7 +150,21 @@ def notify_joystick_of_leader(leader_robot):
     print("Joystick notified of leader:", leader_info)
     return leader_info
     
-
+def announce_leader_to_keyboard(keyboard, message):
+    port = 65011  # Adjust this to the correct port for your keyboard service
+    
+    try:
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        
+        sock.connect((keyboard_ip, port))
+        
+        sock.sendall(message.encode('utf-8'))
+        
+        print(f"Message sent to keyboard at {keyboard_ip}: {message}")
+    
+    except Exception as e:
+        print(f"Error communicating with the keyboard: {e}")
+    
 def simulate_leader_election(devices):
     # Create robots based on discovered_robots but generate ElectionID here
     # robots = [Robot() for _ in enumerate(devices)]
@@ -193,6 +206,14 @@ def simulate_leader_election(devices):
     
     robot.leader_id = potential_leader_id
 
+    keyboard = None
+
+    # Leader announcement 
+    for device in devices: #find the keyboard
+            if (device['DeviceType'] == 'Keyboard'):
+                keyboard = device
+
+    announce_leader_to_keyboard(keyboard, robot.leader_id)
     return robot.leader_id 
   
     # # Leader Announcement

@@ -16,13 +16,15 @@ def main():
     # time.sleep(10) #This makes it so that messages sent from discovery dont try to get interpreted as elections
 
     # Run leader election
-    leader = elections.simulate_leader_election(devices)
-    print(f"Elected leader: {leader}")
+    if device_type == "Robot":
+        leader = elections.simulate_leader_election(devices)
+        print(f"Elected leader: {leader}")
+        
     
-    # If this is a keyboard controller, start the control interface
     if device_type == "Keyboard":
+    # If this is a keyboard controller, start the control interface
         # Find leader's IP from devices list
-        leader_ip = next((device['IP'] for device in devices if device['ID'] == leader), None)
+        leader_ip = leader
         
         if leader_ip:
             controller = KeyboardController(leader_ip=leader_ip, leader_id=leader)
