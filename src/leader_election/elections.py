@@ -86,8 +86,6 @@ class Robot:
                                 "election_id": str(election_id)
                             })
                             print(f"I received ElectionID {election_id} from Robot {robot_id}")
-                        else:
-                            # print(f"Robot {self.id} ignored duplicate ElectionID {election_id} from Robot {robot_id}")
 
                     # Function above makes it so that it checks to make sure that the election id isnt already in the received election ids
                 except socket.timeout:
