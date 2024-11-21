@@ -154,11 +154,11 @@ def announce_leader_to_keyboard(keyboard, message):
     try:
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         
-        sock.connect((keyboard.ip, port))
+        sock.connect((keyboard_ip, port))
         
         sock.sendall(message.encode('utf-8'))
         
-        print(f"Message sent to keyboard at {keyboard.ip}: {message}")
+        print(f"Message sent to keyboard at {keyboard_ip}: {message}")
     
     except Exception as e:
         print(f"Error communicating with the keyboard: {e}")
