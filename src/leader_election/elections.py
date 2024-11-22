@@ -148,71 +148,66 @@ def notify_joystick_of_leader(leader_robot):
     print("Joystick notified of leader:", leader_info)
     return leader_info
     
-def announce_leader_to_keyboard(keyboard_ip, message):
-    port = 65011  # Adjust this to the correct port for your keyboard service
+def announce_leader_to_keyboard(keyboard_device, leader_id):
+    """
+    Announce the elected leader to the keyboard controller.
     
+    :param keyboard_device: The keyboard device information (dict with IP and other metadata).
+    :param leader_id: The ID of the elected leader.
+    """
+    if not keyboard_device:
+        print("Error: No keyboard device found in the network.")
+        return
+
+    keyboard_ip = keyboard_device.get('IP')
+    port = 65011  # Port for the keyboard service
+    message = f"LEADER_ID:{leader_id}"
+
     try:
-        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        
-        sock.connect((keyboard_ip, port))
-        
-        sock.sendall(message.encode('utf-8'))
-        
-        print(f"Message sent to keyboard at {keyboard_ip}: {message}")
-    
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
+            sock.connect((keyboard_ip, port))
+            sock.sendall(message.encode('utf-8'))
+            print(f"Leader ID {leader_id} sent to keyboard at {keyboard_ip}.")
     except Exception as e:
-        print(f"Error communicating with the keyboard: {e}")
-    
+        print(f"Error sending leader ID to keyboard: {e}")
+
 def simulate_leader_election(devices):
-    # Create robots based on discovered_robots but generate ElectionID here
-    # robots = [Robot() for _ in enumerate(devices)]
     robot = None
 
-    # Robot creates its own election id
+    # Find the robot corresponding to the current device
     for device in devices:
-        # Loop through all the devices in the fleet, if the device is a robot and has the same ip address (essentially)
-        # finds the raspberry pi in the list of all the devices
-        if (device['DeviceType'] == 'Robot') and (device['IP'] == get_local_ip()):
-            robot= Robot(device['ID'], device['Status'], device['IP'], device['DeviceType'], devices) # Creates the election id and defines the robot
-    
-    stop_event = threading.Event()  # Event to signal the end of broadcasting
-    threads = []
+        if device['DeviceType'] == 'Robot' and device['IP'] == get_local_ip():
+            robot = Robot(device['ID'], device['Status'], device['IP'], device['DeviceType'], devices)
 
-     # Initialize each robot and start broadcasting on a separate thread
-    print(f"I am starting broadcast [{robot.id}] with my ElectionID of {robot.election_id}")
+    if not robot:
+        print("Error: This device is not a robot.")
+        return None
 
+    stop_event = threading.Event()
+
+    # Start broadcasting and listening in separate threads
     electionid_broadcast_thread = threading.Thread(target=robot.broadcast, args=(stop_event,))
     electionid_listen_thread = threading.Thread(target=robot.listen, args=(stop_event,))
-    
     electionid_broadcast_thread.start()
     electionid_listen_thread.start()
-   
-    
-    # Allow broadcasting for a brief period, then stop to determine leader
-    time.sleep(10)
-    stop_event.set()  # Stop all broadcasting
 
-    # Wait for all threads to complete
+    time.sleep(10)  # Allow some time for the election process
+    stop_event.set()
     electionid_broadcast_thread.join()
     electionid_listen_thread.join()
 
-    # Consensus Protocol: Decide and announce leader
-    leader_id = None
+    # Decide the leader
+    leader_id = robot.decide_leader()
+    print(f"Robot {robot.id} determined the leader to be Robot {leader_id}.")
+    robot.leader_id = leader_id
 
-    potential_leader_id = robot.decide_leader()
-    print(f"Robot {robot.id} thinks Robot {potential_leader_id} should be the leader.")
-    
-    robot.leader_id = potential_leader_id
+    # Find the keyboard device in the network
+    keyboard = next((d for d in devices if d['DeviceType'] == 'Keyboard'), None)
 
-    keyboard = None
+    # Notify the keyboard about the elected leader
+    announce_leader_to_keyboard(keyboard, leader_id)
 
-    # Leader announcement 
-    for device in devices: #find the keyboard
-            if (device['DeviceType'] == 'Keyboard'):
-                keyboard = device
-
-    announce_leader_to_keyboard(keyboard, robot.leader_id)
-    return robot.leader_id 
+    return leader_id
   
     # # Leader Announcement
     # if leader_id is not None:
