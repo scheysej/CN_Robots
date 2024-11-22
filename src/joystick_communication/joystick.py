@@ -15,8 +15,12 @@ from pynput import keyboard
 
 import sys
 import os
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../command_broadcast')))
+
+sys.path.append(
+    os.path.abspath(os.path.join(os.path.dirname(__file__), "../command_broadcast"))
+)
 import broadcast
+
 
 class KeyboardController:
     def __init__(self, leader_ip=None, leader_id=None):
@@ -32,15 +36,17 @@ class KeyboardController:
         self.last_y_command = "stop"
         self.listen_port = 65009
         self.stop_event = threading.Event()
-        
+
         # Initialize the keyboard listener
-        self.listener = keyboard.Listener(on_press=self.on_press, on_release=self.on_release)
+        self.listener = keyboard.Listener(
+            on_press=self.on_press, on_release=self.on_release
+        )
         self.listener_thread = threading.Thread(target=self.start_listener, daemon=True)
 
         # State variables for movement commands
         self.x_command = "center"
         self.y_command = "stop"
-    
+
     def get_local_ip(self):
         with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
             s.connect(("8.8.8.8", 80))
@@ -59,7 +65,7 @@ class KeyboardController:
                 self.y_command = "backward"
         except AttributeError:
             pass
-    
+
     def on_release(self, key):
         """Handles key release events."""
         try:
@@ -70,7 +76,7 @@ class KeyboardController:
                 self.y_command = "stop"
         except AttributeError:
             pass
-        
+
         # Stop listener when escape key is pressed
         if key == keyboard.Key.esc:
             return False
@@ -85,7 +91,7 @@ class KeyboardController:
             "role": self.role,
             "movement_x": x_command,
             "movement_y": y_command,
-            "timestamp": time.time()
+            "timestamp": time.time(),
         }
         message["signature"] = self.sign_message(message)
         return json.dumps(message)
@@ -106,15 +112,15 @@ class KeyboardController:
     def start_listener(self):
         """Start listening for responses from leader."""
         with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as sock:
-            sock.bind(('', self.listen_port))
+            sock.bind(("", self.listen_port))
             print(f"Listening for responses on port {self.listen_port}")
-            
+
             while not self.stop_event.is_set():
                 try:
                     data, addr = sock.recvfrom(1024)
-                    #message = json.loads(data.decode())
+                    # message = json.loads(data.decode())
                     broadcast.broadcast_message(data)
-                    #print(f"Received response from {addr}: {message}")
+                    # print(f"Received response from {addr}: {message}")
                 except socket.timeout:
                     continue
                 except json.JSONDecodeError:
@@ -125,11 +131,11 @@ class KeyboardController:
     def run(self):
         print("Starting keyboard controller. Use arrow keys to control robots.")
         print("Press Ctrl+C to exit.")
-        
+
         if not self.leader_ip or not self.leader_id:
             print("Error: No leader information provided")
             return
-        
+
         print(f"Connected to leader at {self.leader_ip}")
 
         # Start the listener thread
@@ -143,7 +149,7 @@ class KeyboardController:
                 # Only send message if commands have changed
                 message = self.create_message(self.x_command, self.y_command)
                 self.send_to_leader(message)
-                
+
                 time.sleep(0.1)  # Small delay to prevent CPU overuse
 
         except KeyboardInterrupt:
@@ -151,6 +157,7 @@ class KeyboardController:
             self.stop_event.set()  # stop listener thread
             self.listener.stop()  # Stop the pynput listener thread
             self.listener_thread.join()  # Wait for listener thread to finish
+
 
 if __name__ == "__main__":
     # run sudo for keyboard access

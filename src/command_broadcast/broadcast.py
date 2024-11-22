@@ -4,7 +4,7 @@ import time
 
 def broadcast_message(message):
 
-    broadcast_ip = '255.255.255.255'
+    broadcast_ip = "255.255.255.255"
     port = 65010
 
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -15,4 +15,3 @@ def broadcast_message(message):
         print(f"Broadcast message sent: {message}")
     finally:
         sock.close()
-
