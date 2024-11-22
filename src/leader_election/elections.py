@@ -148,7 +148,7 @@ def notify_joystick_of_leader(leader_robot):
     print("Joystick notified of leader:", leader_info)
     return leader_info
     
-def announce_leader_to_keyboard(keyboard, message):
+def announce_leader_to_keyboard(keyboard_ip, message):
     port = 65011  # Adjust this to the correct port for your keyboard service
     
     try:
