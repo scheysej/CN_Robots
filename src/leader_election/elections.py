@@ -18,6 +18,35 @@ def get_local_ip():
         s.connect(("8.8.8.8", 80))  # Use any reachable IP
         return s.getsockname()[0]
     
+class Keyboard:
+    def __init__(self):
+        self.leader_reports = []
+
+    def listen_for_leaders(self, port=65011):
+        """Listen for leader reports from robots."""
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
+            sock.bind(('', port))
+            sock.listen()
+            print("Keyboard is listening for leader reports...")
+
+            while True:
+                conn, addr = sock.accept()
+                with conn:
+                    data = conn.recv(1024).decode('utf-8')
+                    if data:
+                        print(f"Keyboard received leader report: {data}")
+                        self.leader_reports.append(data)
+                        self.validate_leader()
+
+    def validate_leader(self):
+        """Check if all leader reports match."""
+        if len(self.leader_reports) > 0:
+            first_leader = self.leader_reports[0]
+            if all(report == first_leader for report in self.leader_reports):
+                print("Consensus achieved! Leader is:", first_leader)
+            else:
+                print("Leader reports do not match. Consensus not achieved.")
+
 class Robot:
     def __init__(self, robot_id, status, ip, type, devices):
         self.id = robot_id
@@ -212,6 +241,11 @@ def simulate_leader_election(devices):
                 keyboard = device
 
     announce_leader_to_keyboard(keyboard, robot.leader_id)
+
+    keyboard = next((device for device in devices if device['DeviceType'] == 'Keyboard'), None)
+    if keyboard:
+        if robot.leader_id == robot.id:  # If the robot believes itself is the leader
+            robot.notify_keyboard_as_leader(keyboard['IP'])
     return robot.leader_id 
   
     # # Leader Announcement
@@ -231,3 +265,4 @@ def simulate_leader_election(devices):
     #             print(f"Joystick notified: Robot {robot.id} is the leader.")
     #             notify_joystick_of_leader(robot)
     #             return leader_id
+    #               A random comment
