@@ -164,20 +164,29 @@ def notify_joystick_of_leader(leader_robot):
     return leader_info
 
 
-def announce_leader_to_keyboard(keyboard_ip, message):
-    port = 65011  # Adjust this to the correct port for your keyboard service
-
-    try:
-        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-
-        sock.connect((keyboard_ip, port))
-
-        sock.sendall(message.encode("utf-8"))
-
-        print(f"Message sent to keyboard at {keyboard_ip}: {message}")
-
-    except Exception as e:
-        print(f"Error communicating with the keyboard: {e}")
+def announce_leader_to_keyboard(keyboard, leader_id):
+    if not keyboard:
+        print("No keyboard device found")
+        return
+        
+    port = 65011
+    max_retries = 3
+    retry_delay = 1
+    
+    for attempt in range(max_retries):
+        try:
+            with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
+                sock.connect((keyboard["IP"], port))
+                sock.sendall(str(leader_id).encode("utf-8"))
+                print(f"Successfully announced leader {leader_id} to keyboard at {keyboard['IP']}")
+                return True
+        except Exception as e:
+            print(f"Attempt {attempt + 1} failed: {e}")
+            if attempt < max_retries - 1:
+                time.sleep(retry_delay)
+    
+    print(f"Failed to announce leader to keyboard after {max_retries} attempts")
+    return False
 
 
 def simulate_leader_election(devices):
@@ -257,3 +266,41 @@ def simulate_leader_election(devices):
     #             print(f"Joystick notified: Robot {robot.id} is the leader.")
     #             notify_joystick_of_leader(robot)
     #             return leader_id
+
+
+def keyboard_listen_election(devices):
+    """Listen to election process from all robots and verify consensus."""
+    # Create TCP server socket
+    server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+    server_socket.bind(("", 65011))  # Using port 65011 as defined in announce_leader_to_keyboard
+    server_socket.listen(5)
+    
+    robot_votes = {}  # Track each robot's leader vote
+    robot_count = sum(1 for device in devices if device["DeviceType"] == "Robot")
+    
+    print("Keyboard listening for leader election results...")
+    
+    try:
+        while len(robot_votes) < robot_count:
+            client_socket, addr = server_socket.accept()
+            data = client_socket.recv(1024).decode()
+            
+            # Parse the leader ID from the robot
+            robot_votes[addr[0]] = data
+            print(f"Received vote from {addr[0]}: Leader ID = {data}")
+            
+            client_socket.close()
+            
+        # Verify consensus
+        unique_votes = set(robot_votes.values())
+        if len(unique_votes) == 1:
+            elected_leader = next(iter(unique_votes))
+            print(f"Consensus reached! Leader ID: {elected_leader}")
+            return elected_leader
+        else:
+            print("Warning: No consensus reached among robots!")
+            return None
+            
+    finally:
+        server_socket.close()

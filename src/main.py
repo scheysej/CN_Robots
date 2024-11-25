@@ -22,15 +22,11 @@ def main():
         print(f"Elected leader: {leader}")
 
     if device_type == "Keyboard":
-        # If this is a keyboard controller, start the control interface
-        # Find leader's IP from devices list
-        leader_ip = leader
-
-        if leader_ip:
-            controller = KeyboardController(leader_ip=leader_ip, leader_id=leader)
-            controller.run()  # Start the controller logic
-        else:
-            print("Error: Could not find leader's IP address")
+        elected_leader = elections.keyboard_listen_election(devices)
+        if elected_leader:
+            # Initialize keyboard controller with verified leader
+            controller = KeyboardController(leader_id=elected_leader)
+            controller.run()
     elif device_type == "Robot":
         listen.listen_for_commands()
 

@@ -28,12 +28,16 @@ def find_keyboard_device():
 def get_device_identity():
     project_root = find_project_root()
     identity_file = os.path.join(project_root, "device_identity.json")
-
+    
+    # Check for existing keyboard devices in identity files
+    keyboard_count = 0
     if os.path.exists(identity_file):
         with open(identity_file, "r") as f:
             identity = json.load(f)
+            if identity["type"] == "Keyboard":
+                keyboard_count += 1
             return identity["id"], identity["type"]
-
+            
     try:
         with open("/proc/cpuinfo", "r") as f:
             for line in f:
@@ -46,6 +50,22 @@ def get_device_identity():
 
     device_type = "Robot"
     if find_keyboard_device():
+        # Check network for other keyboard devices
+        keyboard_files = glob.glob(os.path.join(os.path.dirname(project_root), "**/device_identity.json"), recursive=True)
+        for kf in keyboard_files:
+            try:
+                with open(kf, "r") as f:
+                    other_identity = json.load(f)
+                    if other_identity["type"] == "Keyboard":
+                        keyboard_count += 1
+            except:
+                continue
+                
+        if keyboard_count >= 2:
+            print("Error: More than 2 keyboards detected in the network!")
+            print("Please ensure only one keyboard controller is active.")
+            exit(1)  # Exit the program
+            
         device_type = "Keyboard"
 
     identity = {"id": device_id, "type": device_type, "serial": serial}
