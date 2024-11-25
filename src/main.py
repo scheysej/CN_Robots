@@ -24,6 +24,7 @@ def main():
     if device_type == "Keyboard":
         elected_leader = elections.keyboard_listen_election(devices)
         if elected_leader:
+            print(f"TEEEEEST Elected leader: {elected_leader}")
             # Initialize keyboard controller with verified leader
             controller = KeyboardController(leader_id=elected_leader)
             controller.run()
