@@ -1,8 +1,8 @@
 import socket
 import json
 
-# import movement
-port = 65010
+import movement
+port = 65009
 
 
 def listen_for_commands():
@@ -22,23 +22,23 @@ def listen_for_commands():
 
             if message["movement_y"] == "forward":
                 print("y forward")
-                # movement.forward()
+                movement.forward()
             elif message["movement_y"] == "stop":
                 print("y stop")
-                # movement.stopcar()
+                movement.stopcar()
             elif message["movement_y"] == "backward":
                 print("y backward")
-                # movement.backward()
+                movement.backward()
 
             if message["movement_x"] == "left":
                 print("x left")
-                # movement.steer(movement.LEFT)
+                movement.steer(movement.LEFT)
             elif message["movement_x"] == "right":
                 print("x right")
-                # movement.steer(movement.RIGHT)
+                movement.steer(movement.RIGHT)
             elif message["movement_x"] == "center":
                 print("x center")
-                # movement.steer(movement.CENTER)
+                movement.steer(movement.CENTER)
     except KeyboardInterrupt:
         print("\nListener stopped by user.")
     finally:
