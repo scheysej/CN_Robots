@@ -117,6 +117,13 @@ class Robot:
 
     def decide_leader(self):
         # Decide the leader based on the highest ElectionID received, including its own.
+        election_ids = [int(id["election_id"]) for id in self.received_election_ids]
+        
+        # Check if there are any duplicate election IDs
+        if len(set(election_ids)) < len(election_ids):
+            print("Duplicate election IDs detected - need to redo election")
+            return "REDO"  # Special signal to indicate election needs to be redone
+        
         max_election_id = None
         leader_id = None
         for id in self.received_election_ids:
@@ -127,8 +134,6 @@ class Robot:
                 max_election_id = election_id
                 leader_id = robot_id
 
-        # if leader_id == self.id:
-        #    self.is_leader = True
         print(
             f"The max election id is "
             + str(max_election_id)
@@ -207,65 +212,45 @@ def simulate_leader_election(devices):
                 devices,
             )  # Creates the election id and defines the robot
 
-    stop_event = threading.Event()  # Event to signal the end of broadcasting
-    threads = []
+    while True:  # Keep trying until we get a valid election
+        stop_event = threading.Event()
+        threads = []
 
-    # Initialize each robot and start broadcasting on a separate thread
-    print(
-        f"I am starting broadcast [{robot.id}] with my ElectionID of {robot.election_id}"
-    )
+        print(
+            f"I am starting broadcast [{robot.id}] with my ElectionID of {robot.election_id}"
+        )
 
-    electionid_broadcast_thread = threading.Thread(
-        target=robot.broadcast, args=(stop_event,)
-    )
-    electionid_listen_thread = threading.Thread(target=robot.listen, args=(stop_event,))
+        electionid_broadcast_thread = threading.Thread(
+            target=robot.broadcast, args=(stop_event,)
+        )
+        electionid_listen_thread = threading.Thread(target=robot.listen, args=(stop_event,))
 
-    electionid_broadcast_thread.start()
-    electionid_listen_thread.start()
+        electionid_broadcast_thread.start()
+        electionid_listen_thread.start()
 
-    # Allow broadcasting for a brief period, then stop to determine leader
-    time.sleep(10)
-    stop_event.set()  # Stop all broadcasting
+        time.sleep(10)
+        stop_event.set()
 
-    # Wait for all threads to complete
-    electionid_broadcast_thread.join()
-    electionid_listen_thread.join()
+        electionid_broadcast_thread.join()
+        electionid_listen_thread.join()
 
-    # Consensus Protocol: Decide and announce leader
-    leader_id = None
+        potential_leader_id = robot.decide_leader()
+        
+        if potential_leader_id == "REDO":
+            print("Restarting election due to duplicate IDs...")
+            robot.election_id = random.randint(1, 100)  # Generate new election ID
+            robot.received_election_ids = []  # Clear received IDs
+            continue
+            
+        robot.leader_id = potential_leader_id
 
-    potential_leader_id = robot.decide_leader()
-    print(f"Robot {robot.id} thinks Robot {potential_leader_id} should be the leader.")
+        keyboard = None
+        for device in devices:
+            if device["DeviceType"] == "Keyboard":
+                keyboard = device
 
-    robot.leader_id = potential_leader_id
-
-    keyboard = None
-
-    # Leader announcement
-    for device in devices:  # find the keyboard
-        if device["DeviceType"] == "Keyboard":
-            keyboard = device
-
-    announce_leader_to_keyboard(keyboard, robot.leader_id)
-    return robot.leader_id
-
-    # # Leader Announcement
-    # if leader_id is not None:
-    #     for robot in robots:
-    #         if robot.is_leader:
-    #             print(f"Robot {robot.id} is the leader and will announce.")
-    #             leader_stop_event = threading.Event()
-    #             leader_thread = threading.Thread(target=robot.broadcast_leader, args=(leader_stop_event,robots))
-    #             leader_thread.start()
-
-    #             # Let the leader announce for a short time, then stop
-    #             time.sleep(3)
-    #             leader_stop_event.set()
-    #             leader_thread.join()
-
-    #             print(f"Joystick notified: Robot {robot.id} is the leader.")
-    #             notify_joystick_of_leader(robot)
-    #             return leader_id
+        announce_leader_to_keyboard(keyboard, robot.leader_id)
+        return robot.leader_id
 
 
 def keyboard_listen_election(devices):
