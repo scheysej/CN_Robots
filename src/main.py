@@ -12,7 +12,6 @@ def main():
     devices = discover.discover_neighbouring_devices()
     print(f"Discovered devices: {devices}")
     
-    # time.sleep(10) #This makes it so that messages sent from discovery dont try to get interpreted as elections
 
     # Run leader election
     if device_type == "Robot":
@@ -20,6 +19,7 @@ def main():
         leader = elections.simulate_leader_election(devices)
         print(f"Elected leader: {leader}")
         
+    time.sleep(10) #This makes it so that messages sent from discovery dont try to get interpreted as elections
     
     if device_type == "Keyboard":
     # If this is a keyboard controller, start the control interface
