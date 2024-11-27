@@ -58,3 +58,11 @@ def get_device_identity():
         json.dump(identity, f)
     
     return device_id, device_type 
+
+
+
+
+
+
+if __name__ == "__main__":
+	print(get_device_identity())
