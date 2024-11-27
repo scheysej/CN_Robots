@@ -22,29 +22,27 @@ def listen_for_commands():
 			data, addr = sock.recvfrom(1024)  # Buffer size of 1024 bytes
 			message = json.loads(data.decode())
 
-			identity = get_device_identity()
-
-			
+			id,type,name = get_device_identity()
 			
 			if message['movement_y'] == "forward":
 				print("y forward")
-				if identity.name == "Adeept":
+				if name == "Adeept":
 					am.forward(100)
-				elif identity.name == "Osoyoo":
+				elif name == "Osoyoo":
 					movement.forward()
 
 			elif message['movement_y'] == "stop":
 				print("y stop")
-				if identity.name == "Adeept":
+				if name == "Adeept":
 					am.destroy()
-				elif identity.name == "Osoyoo":
+				elif name == "Osoyoo":
 					movement.stopcar()
 					
 			elif message['movement_y'] == "backward":
 				print("y backward")
-				if identity.name == "Adeept":
+				if name == "Adeept":
 					am.backward(100)
-				elif identity.name == "Osoyoo":
+				elif name == "Osoyoo":
 					movement.backward()
 				
 			if message['movement_x'] == "left":
