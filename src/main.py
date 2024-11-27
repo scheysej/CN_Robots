@@ -32,7 +32,7 @@ def main():
                     break
         
         if leader_ip:
-            controller = KeyboardController(leader_ip=leader_ip, leader_id=leader)
+            controller = KeyboardController(leader_ip=leader_ip, leader_id=elected_leader)
             controller.run()  # Start the controller logic
         else:
             print("Error: Could not find leader's IP address")
