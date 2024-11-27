@@ -9,7 +9,7 @@ def main():
     _, device_type = get_device_identity()
 
     if get_device_identity == "Robot":
-	from command_broadcast import listen
+	    from command_broadcast import listen
 
     # Discover network devices
     devices = discover.discover_neighbouring_devices()
