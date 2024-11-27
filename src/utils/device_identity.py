@@ -57,7 +57,7 @@ def get_device_identity():
     with open(identity_file, 'w') as f:
         json.dump(identity, f)
     
-    return device_id, device_type, name
+    return {"id":device_id, "type":device_type, "name":name}
 
 
 
