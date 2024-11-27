@@ -26,23 +26,23 @@ def listen_for_commands():
 			
 			if message['movement_y'] == "forward":
 				print("y forward")
-				if device_identity.name == "Adeept":
+				if device_identity["name"] == "Adeept":
 					am.forward(100)
-				elif device_identity.name == "Osoyoo":
+				elif device_identity["name"] == "Osoyoo":
 					movement.forward()
 
 			elif message['movement_y'] == "stop":
 				print("y stop")
-				if device_identity.name == "Adeept":
+				if device_identity["name"] == "Adeept":
 					am.destroy()
-				elif device_identity.name == "Osoyoo":
+				elif device_identity["name"] == "Osoyoo":
 					movement.stopcar()
 					
 			elif message['movement_y'] == "backward":
 				print("y backward")
-				if device_identity.name == "Adeept":
+				if device_identity["name"] == "Adeept":
 					am.backward(100)
-				elif device_identity.name == "Osoyoo":
+				elif device_identity["name"] == "Osoyoo":
 					movement.backward()
 				
 			if message['movement_x'] == "left":

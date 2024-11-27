@@ -15,13 +15,13 @@ def main():
     #time.sleep(10) #This makes it so that messages sent from discovery dont try to get interpreted as elections
 
     # Run leader election
-    if device_identity.type == "Robot":
+    if device_identity["type"] == "Robot":
         from command_broadcast import listen
         leader = elections.simulate_leader_election(devices)
         print(f"Elected leader: {leader}")
         
     
-    if device_identity.type == "Keyboard":
+    if device_identity["type"] == "Keyboard":
         elected_leader = elections.keyboard_listen_election(devices)
         if elected_leader:
             # Find leader's IP from devices list
@@ -36,7 +36,7 @@ def main():
             controller.run()  # Start the controller logic
         else:
             print("Error: Could not find leader's IP address")
-    elif device_identity.type == "Robot":
+    elif device_identity["type"] == "Robot":
         listen.listen_for_commands()
 
 if __name__ == "__main__":

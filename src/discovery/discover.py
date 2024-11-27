@@ -29,16 +29,16 @@ class Device:
 
     def create_broadcast_message(self):
         return f"""Type: DISCOVER
-        ID: {self.device_identity.id}
-        DeviceType: {self.device_identity.type}
+        ID: {self.device_identity["id"]}
+        DeviceType: {self.device_identity["type"]}
         IP: {self.ip}
         Status: {self.status}
         Role: {self.role}"""
     
     def object_representation(self):
         return {
-            'ID': self.device_identity.id,
-            'DeviceType': self.device_identity.type,
+            'ID': self.device_identity["id"],
+            'DeviceType': self.device_identity["type"],
             'IP': self.ip,
             'Status': self.status,
             'Role': self.role
