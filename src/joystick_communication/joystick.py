@@ -20,7 +20,7 @@ import broadcast
 
 class KeyboardController:
     def __init__(self, leader_ip=None, leader_id=None):
-        self.device_identity = get_device_identity()
+        self.id, _ = get_device_identity()
         self.device_type = "Keyboard"
         self.ip = self.get_local_ip()
         self.status = "Active"
@@ -78,8 +78,8 @@ class KeyboardController:
     def create_message(self, x_command, y_command):
         """Create a signed message that can be validated by the leader."""
         message = {
-            "id": self.device_identity["id"],
-            "device_type": self.device_identity["type"],
+            "id": self.id,
+            "device_type": self.device_type,
             "ip": self.ip,
             "status": self.status,
             "role": self.role,

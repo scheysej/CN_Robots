@@ -22,23 +22,23 @@ PORT = 65009
 
 class Device:
     def __init__(self):
-        self.device_identity = get_device_identity()
+        self.id, self.device_type = get_device_identity()
         self.ip = get_local_ip()
         self.status = "Active"
         self.role = "Undecided"
 
     def create_broadcast_message(self):
         return f"""Type: DISCOVER
-        ID: {self.device_identity["id"]}
-        DeviceType: {self.device_identity["type"]}
+        ID: {self.id}
+        DeviceType: {self.device_type}
         IP: {self.ip}
         Status: {self.status}
         Role: {self.role}"""
     
     def object_representation(self):
         return {
-            'ID': self.device_identity["id"],
-            'DeviceType': self.device_identity["type"],
+            'ID': self.id,
+            'DeviceType': self.device_type,
             'IP': self.ip,
             'Status': self.status,
             'Role': self.role
