@@ -8,11 +8,21 @@
 
 from __future__ import division
 import time
-Import the PCA9685 module.
-import Adafruit_PCA9685
-import RPi.GPIO as GPIO
+#Import the PCA9685 module.
+import Adafruit_PCA9685 
+import RPi.GPIO as GPIO 
+import smbus
+bus = smbus.SMBus(1)
+time.sleep(1)
+#while True:
+#	data = bus.read_i2c_block_data(0x04,0x02,4)
+#	result = 0
+#	for b in data:
+#		result = result * 256 + int(b)
+#	print(result)
+#	time.sleep(1)
 # Initialise the PCA9685 using the default address (0x40).
-pwm = Adafruit_PCA9685.PCA9685()
+pwm = Adafruit_PCA9685.PCA9685(0x5f)
  
 servo_pin = 15 #  servo connect to PWM 15
 
@@ -28,9 +38,9 @@ move_speed = 4000  # Max pulse length out of 4096
 # Set frequency to 60hz, good for servos.
 #pwm.set_pwm_freq(60)
 #pwm.set_pwm(servo_pin, 0, LEFT)
-time.sleep(1)
+#time.sleep(1)
 #pwm.set_pwm(servo_pin, 0, RIGHT)
-time.sleep(1)
+#time.sleep(1)
 #pwm.set_pwm(servo_pin, 0, CENTER)
 
 
