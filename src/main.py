@@ -8,9 +8,6 @@ def main():
     # Get device identity
     _, device_type = get_device_identity()
 
-    if get_device_identity == "Robot":
-	    from command_broadcast import listen
-
     # Discover network devices
     devices = discover.discover_neighbouring_devices()
     print(f"Discovered devices: {devices}")
@@ -19,6 +16,7 @@ def main():
 
     # Run leader election
     if device_type == "Robot":
+	    from command_broadcast import listen
         leader = elections.simulate_leader_election(devices)
         print(f"Elected leader: {leader}")
         
