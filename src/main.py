@@ -2,7 +2,8 @@ from discovery import discover
 from leader_election import elections
 from joystick_communication.joystick import KeyboardController
 from utils.device_identity import get_device_identity
-from command_broadcast import listen
+if get_device_identity == "Robot":
+	from command_broadcast import listen
 import time 
 
 def main():
