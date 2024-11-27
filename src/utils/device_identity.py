@@ -44,11 +44,14 @@ def get_device_identity():
     device_type = "Robot"
     if find_keyboard_device():
         device_type = "Keyboard"
+	
+    name = "Adeept"
     
     identity = {
         'id': device_id,
         'type': device_type,
-        'serial': serial
+        'serial': serial,
+	'name':name
     }
     
     with open(identity_file, 'w') as f:
