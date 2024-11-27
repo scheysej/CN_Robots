@@ -16,7 +16,7 @@ def main():
 
     # Run leader election
     if device_type == "Robot":
-	    from command_broadcast import listen
+        from command_broadcast import listen
         leader = elections.simulate_leader_election(devices)
         print(f"Elected leader: {leader}")
         
