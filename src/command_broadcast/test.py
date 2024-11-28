@@ -8,7 +8,7 @@ import aservo
 
 port = 65009
 
-def listen_for_commands(message):
+def listen_for_commands(*message):
 	# # Set up the UDP socket
 	# sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 	# sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
@@ -83,9 +83,9 @@ def listen_for_commands(message):
 
 if __name__ == "__main__":
 	
-    message = {'id': 14842699, 'device_type': 'Keyboard', 'ip': '192.168.0.120', 'status': 'Active', 'role': 'Controller', 'movement_x': 'stop', 'movement_y': 'stop', 'timestamp': 1732753971.4385366, 'signature': 'bf3bcb1dfdb7f93dab84f8e28991e66a74c7c4711090566c10b48c8a2408b257'}
+    message = {'id': 14842699, 'device_type': 'Keyboard', 'ip': '192.168.0.120', 'status': 'Active', 'role': 'Controller', 'movement_x': 'forward', 'movement_y': 'stop', 'timestamp': 1732753971.4385366, 'signature': 'bf3bcb1dfdb7f93dab84f8e28991e66a74c7c4711090566c10b48c8a2408b257'}
 
-    listen_for_commands(message)
+    listen_for_commands(**message)
 	
     time.sleep(3)
 	
