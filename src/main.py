@@ -3,7 +3,6 @@ from leader_election import elections
 from joystick_communication.joystick import KeyboardController
 from utils.device_identity import get_device_identity
 import time 
-from command_broadcast import Amove as am
 
 def main():
     # Get device identity
@@ -38,7 +37,7 @@ def main():
         else:
             print("Error: Could not find leader's IP address")
     elif device_type == "Robot":
-        listen.listen_for_commands(am)
+        listen.listen_for_commands()
 
 if __name__ == "__main__":
     main()
