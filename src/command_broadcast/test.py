@@ -51,14 +51,14 @@ def listen_for_commands(message):
 				# elif name == "Osoyoo":
 				# 	movement.backward()
 				
-			if message['movement_x'] == "left":
+			if message == "left":
 				print("x left")
 
 				# if name == "Adeept":
 				# 	aservo.left()
 				# elif name == "Osoyoo":
 				# 	movement.steer(movement.LEFT)
-			elif message['movement_x'] == "right":
+			elif message == "right":
 				print("x right")
 				aservo.right()
 
@@ -66,7 +66,7 @@ def listen_for_commands(message):
 				# 	aservo.right()
 				# elif name == "Osoyoo":
 				# 	movement.steer(movement.RIGHT)
-			elif message['movement_x'] == "center":
+			elif message == "center":
 				print("x center")
 				aservo.center()
 
