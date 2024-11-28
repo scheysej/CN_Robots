@@ -89,6 +89,7 @@ def motorStop():#Motor stops
 def destroy():
   motorStop()
   pwm_motor.deinit()
+  print("Motor Destroyed")
 
 def forward(speed,channel):
   Motor(channel,1,speed)
