@@ -82,14 +82,13 @@ def Motor(channel,direction,motor_speed):
 
 def motorStop():#Motor stops
     motor1.throttle = 0
-    motor2.throttle = 0
-    motor3.throttle = 0
-    motor4.throttle = 0
+    # motor2.throttle = 0
+    # motor3.throttle = 0
+    # motor4.throttle = 0
 
 def destroy():
   motorStop()
   pwm_motor.deinit()
-  print("Motor Destroyed")
 
 def forward(speed,channel):
   Motor(channel,1,speed)

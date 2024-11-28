@@ -49,7 +49,7 @@ def listen_for_commands():
 					
 			elif message['movement_y'] == "backward":
 				print(message['movement_y'])
-				am.backward(100)
+				am.Motor(1,-1,100)
 				# if name == "Adeept":
 				# 	am.backward(100)
 				# elif name == "Osoyoo":
