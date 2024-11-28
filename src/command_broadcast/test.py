@@ -82,13 +82,13 @@ def listen_for_commands(x,y):
 
 
 if __name__ == "__main__":
-	am.destroy()
-    # message = {'x': 'forward', 'y': 'center'}
+	
+    message = {'x': 'forward', 'y': 'center'}
 
-    # listen_for_commands(**message)
+    listen_for_commands(**message)
 	
-    # time.sleep(3)
+    time.sleep(3)
 	
-    # message = {'x': 'stop', 'y': 'center'}
+    message = {'x': 'stop', 'y': 'center'}
 	
-    # listen_for_commands("stop")
+    listen_for_commands(**message)
