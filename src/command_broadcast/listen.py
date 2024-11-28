@@ -29,21 +29,9 @@ def listen_for_commands():
 			if message['movement_y'] == "forward":
 				print(message['movement_y'])
 
-				print("Channel 1")
-				am.forward(100,1)
-
-				time.sleep(5)
-				print("Channel 2")
-				am.forward(100,2)
-
-				time.sleep(5)
-				print("Channel 3")
-				am.forward(100,3)
-
-				time.sleep(5)
-				print("Channel 4")
-				am.forward(100,4)
-
+				am.Motor(1,1,100)	
+				# am.forward(100,1)
+				# time.sleep(3)
 
 				# if name == "Adeept":
 				# 	am.forward(100)
