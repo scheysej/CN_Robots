@@ -25,7 +25,7 @@ def listen_for_commands(message):
 
 			name = "Adeept"
 			
-			if message['movement_y'] == "forward":
+			if message == "forward":
 				print("y forward")
 				am.forward(100)
 
@@ -34,7 +34,7 @@ def listen_for_commands(message):
 				elif name == "Osoyoo":
 					movement.forward()
 
-			elif message['movement_y'] == "stop":
+			elif message == "stop":
 				print("y stop")
 				am.destroy()
 				
@@ -43,7 +43,7 @@ def listen_for_commands(message):
 				elif name == "Osoyoo":
 					movement.stopcar()
 					
-			elif message['movement_y'] == "backward":
+			elif message == "backward":
 				print("y backward")
 				am.backward(100)
 				# if name == "Adeept":
@@ -83,4 +83,4 @@ def listen_for_commands(message):
 
 
 if __name__ == "__main__":
-    listen_for_commands({"movemen_y":"forward"})
+    listen_for_commands("forward")
