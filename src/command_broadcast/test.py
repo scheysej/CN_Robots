@@ -84,3 +84,7 @@ def listen_for_commands(message):
 
 if __name__ == "__main__":
     listen_for_commands("forward")
+	
+    time.sleep(3)
+	
+    listen_for_commands("stop")
