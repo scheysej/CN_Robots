@@ -26,7 +26,20 @@ def listen_for_commands(x,y):
 			
 			if x == "forward":
 				print("y forward")
-				am.forward(100)
+				print("Channel 1")
+				am.forward(100,1)
+
+				time.sleep(5)
+				print("Channel 2")
+				am.forward(100,2)
+
+				time.sleep(5)
+				print("Channel 3")
+				am.forward(100,3)
+
+				time.sleep(5)
+				print("Channel 4")
+				am.forward(100,4)
 
 				if name == "Adeept":
 					am.forward(100)
