@@ -6,7 +6,7 @@ import Amove as am
 import aservo
 from utils.device_identity import get_device_identity
 
-port = 65009
+port = 65010
 
 def listen_for_commands():
 	# Set up the UDP socket
@@ -57,7 +57,7 @@ def listen_for_commands():
 			if message['movement_x'] == "left":
 				print(message['movement_x'])
 				aservo.left()
-				
+
 				# if name == "Adeept":
 				# 	aservo.left()
 				# elif name == "Osoyoo":
