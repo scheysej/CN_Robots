@@ -85,7 +85,7 @@ if __name__ == "__main__":
 	
     message = {'movement_x': 'forward', 'movement_y': 'stop'}
 
-    listen_for_commands(**message)
+    listen_for_commands(message)
 	
     time.sleep(3)
 	
