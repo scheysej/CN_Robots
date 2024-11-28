@@ -40,7 +40,7 @@ def listen_for_commands():
 
 			elif message['movement_y'] == "stop":
 				print(message['movement_y'])
-				am.destroy()
+				am.motorStop()
 
 				# if name == "Adeept":
 				# 	am.destroy()
