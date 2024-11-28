@@ -25,6 +25,8 @@ def listen_for_commands():
 
 			name = "Adeept"
 			
+			time.sleep(3)
+
 			if message['movement_y'] == "forward":
 				print(message['movement_y'])
 				am.forward(100)
