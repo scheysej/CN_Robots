@@ -90,8 +90,8 @@ def destroy():
   motorStop()
   pwm_motor.deinit()
 
-def forward(speed,channel):
-  Motor(channel,1,speed)
+def forward(speed):
+  Motor(1,1,speed)
 
 def backward(speed):
   Motor(1,-1,speed)
