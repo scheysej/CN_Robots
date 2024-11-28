@@ -3,6 +3,7 @@ import json
 import movement
 import time
 import Amove as am
+import aservo
 from utils.device_identity import get_device_identity
 
 port = 65009
@@ -40,21 +41,37 @@ def listen_for_commands():
 					
 			elif message['movement_y'] == "backward":
 				print("y backward")
-				if name == "Adeept":
-					am.backward(100)
-				elif name == "Osoyoo":
-					movement.backward()
+				am.backward(100)
+				# if name == "Adeept":
+				# 	am.backward(100)
+				# elif name == "Osoyoo":
+				# 	movement.backward()
 				
 			if message['movement_x'] == "left":
 				print("x left")
-				movement.steer(movement.LEFT)
+
+				# if name == "Adeept":
+				# 	aservo.left()
+				# elif name == "Osoyoo":
+				# 	movement.steer(movement.LEFT)
 			elif message['movement_x'] == "right":
 				print("x right")
-				movement.steer(movement.RIGHT)
+				aservo.right()
+
+				# if name == "Adeept":
+				# 	aservo.right()
+				# elif name == "Osoyoo":
+				# 	movement.steer(movement.RIGHT)
 			elif message['movement_x'] == "center":
 				print("x center")
-				movement.steer(movement.CENTER)
+				aservo.center()
+
+				# if name == "Adeept":
+				# 	aservo.center()
+				# elif name == "Osoyoo":
+				# 	movement.steer(movement.CENTER)
 	except KeyboardInterrupt:
+		print("The last message was: ", message)
 		print("\nListener stopped by user.")
 	finally:
 		sock.close()
