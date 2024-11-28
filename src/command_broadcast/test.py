@@ -4,7 +4,7 @@ import movement
 import time
 import Amove as am
 import aservo
-from utils.device_identity import get_device_identity
+# from utils.device_identity import get_device_identity
 
 port = 65009
 
