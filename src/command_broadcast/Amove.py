@@ -105,16 +105,16 @@ if __name__ == '__main__':
     for i in range(10):
       speed_set = 110
       Motor(chann, 1, speed_set)
-      Motor(2, 1, speed_set)
-      Motor(3, 1, speed_set)
-      Motor(4, 1, speed_set)
+      # Motor(2, 1, speed_set)
+      # Motor(3, 1, speed_set)
+      # Motor(4, 1, speed_set)
 
       print("Forward")
       time.sleep(2)
       Motor(chann, -1 ,speed_set)
-      Motor(2, -1 ,speed_set)
-      Motor(3, -1 ,speed_set)
-      Motor(4, -1 ,speed_set)
+      # Motor(2, -1 ,speed_set)
+      # Motor(3, -1 ,speed_set)
+      # Motor(4, -1 ,speed_set)
       print("Backward")
       time.sleep(2)
     destroy()
