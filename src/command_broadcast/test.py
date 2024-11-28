@@ -25,7 +25,7 @@ def listen_for_commands(message):
 
 			name = "Adeept"
 			
-			if message == "forward":
+			if message['movement_x'] == "forward":
 				print("y forward")
 				am.forward(100)
 
@@ -83,7 +83,10 @@ def listen_for_commands(message):
 
 
 if __name__ == "__main__":
-    listen_for_commands("forward")
+	
+    message = {'id': 14842699, 'device_type': 'Keyboard', 'ip': '192.168.0.120', 'status': 'Active', 'role': 'Controller', 'movement_x': 'forward', 'movement_y': 'stop', 'timestamp': 1732753971.4385366, 'signature': 'bf3bcb1dfdb7f93dab84f8e28991e66a74c7c4711090566c10b48c8a2408b257'}
+
+    listen_for_commands(message)
 	
     time.sleep(3)
 	
