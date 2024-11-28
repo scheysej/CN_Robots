@@ -27,6 +27,8 @@ def listen_for_commands():
 			
 			if message['movement_y'] == "forward":
 				print("y forward")
+				am.forward(100)
+
 				if name == "Adeept":
 					am.forward(100)
 				elif name == "Osoyoo":
@@ -34,6 +36,8 @@ def listen_for_commands():
 
 			elif message['movement_y'] == "stop":
 				print("y stop")
+				am.destroy()
+				
 				if name == "Adeept":
 					am.destroy()
 				elif name == "Osoyoo":

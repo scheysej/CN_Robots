@@ -68,7 +68,7 @@ def Motor(channel,direction,motor_speed):
 
   if channel == 1:
     motor1.throttle = speed
-    # print("1111")
+    print("1111")
   elif channel == 2:
     motor2.throttle = speed
     # print("2222")
