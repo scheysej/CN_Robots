@@ -8,7 +8,7 @@ import aservo
 
 port = 65009
 
-def listen_for_commands(*message):
+def listen_for_commands(x,y):
 	# # Set up the UDP socket
 	# sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 	# sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
@@ -24,7 +24,7 @@ def listen_for_commands(*message):
 
 			name = "Adeept"
 			
-			if message['movement_x'] == "forward":
+			if x == "forward":
 				print("y forward")
 				am.forward(100)
 
@@ -33,7 +33,7 @@ def listen_for_commands(*message):
 				elif name == "Osoyoo":
 					movement.forward()
 
-			elif message == "stop":
+			elif x == "stop":
 				print("y stop")
 				am.destroy()
 				
@@ -42,7 +42,7 @@ def listen_for_commands(*message):
 				elif name == "Osoyoo":
 					movement.stopcar()
 					
-			elif message == "backward":
+			elif x == "backward":
 				print("y backward")
 				am.backward(100)
 				# if name == "Adeept":
@@ -50,14 +50,14 @@ def listen_for_commands(*message):
 				# elif name == "Osoyoo":
 				# 	movement.backward()
 				
-			if message == "left":
+			if y == "left":
 				print("x left")
 
 				# if name == "Adeept":
 				# 	aservo.left()
 				# elif name == "Osoyoo":
 				# 	movement.steer(movement.LEFT)
-			elif message == "right":
+			elif y == "right":
 				print("x right")
 				aservo.right()
 
@@ -65,7 +65,7 @@ def listen_for_commands(*message):
 				# 	aservo.right()
 				# elif name == "Osoyoo":
 				# 	movement.steer(movement.RIGHT)
-			elif message == "center":
+			elif y == "center":
 				print("x center")
 				aservo.center()
 
@@ -83,7 +83,7 @@ def listen_for_commands(*message):
 
 if __name__ == "__main__":
 	
-    message = {'id': 14842699, 'device_type': 'Keyboard', 'ip': '192.168.0.120', 'status': 'Active', 'role': 'Controller', 'movement_x': 'forward', 'movement_y': 'stop', 'timestamp': 1732753971.4385366, 'signature': 'bf3bcb1dfdb7f93dab84f8e28991e66a74c7c4711090566c10b48c8a2408b257'}
+    message = {'movement_x': 'forward', 'movement_y': 'stop'}
 
     listen_for_commands(**message)
 	
