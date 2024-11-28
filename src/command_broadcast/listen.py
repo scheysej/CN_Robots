@@ -56,7 +56,8 @@ def listen_for_commands():
 				
 			if message['movement_x'] == "left":
 				print(message['movement_x'])
-
+				aservo.left()
+				
 				# if name == "Adeept":
 				# 	aservo.left()
 				# elif name == "Osoyoo":

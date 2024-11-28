@@ -56,11 +56,15 @@ def test(channel):
 
 def left():
     set_angle(0,30)
+    print("THIS IS GOING LEFT")
 
 def right():
     set_angle(0,95)
+    print("THIS IS GOING RIGHT")
+
 def center():
     set_angle(0,80)
+    print("THIS IS CENTER")
 
 if __name__ == "__main__":
     channel = 0
