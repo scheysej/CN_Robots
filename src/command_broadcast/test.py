@@ -83,10 +83,12 @@ def listen_for_commands(x,y):
 
 if __name__ == "__main__":
 	
-    message = {'x': 'forward', 'y': 'stop'}
+    message = {'x': 'forward', 'y': 'center'}
 
     listen_for_commands(**message)
 	
     time.sleep(3)
+	
+    message = {'x': 'stop', 'y': 'center'}
 	
     listen_for_commands("stop")
