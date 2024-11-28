@@ -55,7 +55,7 @@ def test(channel):
     time.sleep(0.5)
 
 def left():
-    set_angle(0,110)
+    set_angle(0,130)
     print("THIS IS GOING LEFT")
 
 def right():
