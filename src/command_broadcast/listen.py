@@ -28,7 +28,6 @@ def listen_for_commands():
 				print(message['movement_y'])
 
 				am.Motor(1,1,100)	
-				time.sleep(20)
 
 				# am.forward(100,1)
 				# time.sleep(3)
