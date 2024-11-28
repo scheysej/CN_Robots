@@ -28,23 +28,23 @@ def listen_for_commands(x,y):
 				print("y forward")
 				print("Channel 1")
 				am.forward(100,1)
-
+				am.destroy()
 				time.sleep(5)
 				print("Channel 2")
 				am.forward(100,2)
-
+				am.destroy()
 				time.sleep(5)
 				print("Channel 3")
 				am.forward(100,3)
-
+				am.destroy()
 				time.sleep(5)
 				print("Channel 4")
 				am.forward(100,4)
-
-				if name == "Adeept":
-					am.forward(100)
-				elif name == "Osoyoo":
-					movement.forward()
+				am.destroy()
+				# if name == "Adeept":
+				# 	am.forward(100)
+				# elif name == "Osoyoo":
+				# 	movement.forward()
 
 			elif x == "stop":
 				print("y stop")
