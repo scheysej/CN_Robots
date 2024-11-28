@@ -102,4 +102,4 @@ if __name__ == "__main__":
 	
     time.sleep(3)
 	
-    am.forward()
+    am.forward(100,1)
