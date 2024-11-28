@@ -24,26 +24,25 @@ def listen_for_commands():
 			message = json.loads(data.decode())
 
 			name = "Adeept"
+			am.destroy()
 			
-			time.sleep(3)
-
 			if message['movement_y'] == "forward":
 				print(message['movement_y'])
 				am.forward(100)
 
-				if name == "Adeept":
-					am.forward(100)
-				elif name == "Osoyoo":
-					movement.forward()
+				# if name == "Adeept":
+				# 	am.forward(100)
+				# elif name == "Osoyoo":
+				# 	movement.forward()
 
 			elif message['movement_y'] == "stop":
 				print(message['movement_y'])
 				am.destroy()
 
-				if name == "Adeept":
-					am.destroy()
-				elif name == "Osoyoo":
-					movement.stopcar()
+				# if name == "Adeept":
+				# 	am.destroy()
+				# elif name == "Osoyoo":
+				# 	movement.stopcar()
 					
 			elif message['movement_y'] == "backward":
 				print(message['movement_y'])
