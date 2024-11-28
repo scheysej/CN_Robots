@@ -3,7 +3,7 @@ from leader_election import elections
 from joystick_communication.joystick import KeyboardController
 from utils.device_identity import get_device_identity
 import time 
-from command_broadcast.Amove import am
+from command_broadcast import Amove as am
 
 def main():
     # Get device identity
