@@ -27,7 +27,7 @@ def listen_for_commands():
 			if message['movement_y'] == "forward":
 				print(message['movement_y'])
 
-				am.forward(100,1)	
+				am.Motor(1,1,100)	
 
 				# am.forward(100,1)
 				# time.sleep(3)
