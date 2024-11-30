@@ -9,6 +9,7 @@ import random
 import socket
 import time
 from utils.device_identity import get_device_identity
+from utils.device_identity import write_device_identity
 
 BROADCAST_ADDR = "255.255.255.255"  # Define the broadcast address and port
 PORT = 65009
@@ -159,6 +160,10 @@ class Robot:
             'name': "Adeept"
         }
 
+        write_device_identity(identity)
+
+
+
     def broadcast_leader(self, stop_event, robots):
         # Broadcast that this robot is the leader to all others until acknowledged.
         while not stop_event.is_set():
@@ -210,7 +215,7 @@ def simulate_leader_election(devices):
     for device in devices:
         # Loop through all the devices in the fleet, if the device is a robot and has the same ip address (essentially)
         # finds the raspberry pi in the list of all the devices
-        if (device["DeviceType"] == "Robot") and (device["IP"] == get_local_ip()):
+        if (device["DeviceType"] != "Keyboard") and (device["IP"] == get_local_ip()):
             robot = Robot(
                 device["ID"],
                 device["Status"],
@@ -269,7 +274,7 @@ def keyboard_listen_election(devices):
     server_socket.listen(5)
     
     robot_votes = {}  # Track each robot's leader vote
-    robot_count = sum(1 for device in devices if device["DeviceType"] == "Robot")
+    robot_count = sum(1 for device in devices if device["DeviceType"] != "Keyboard")
     
     print("Keyboard listening for leader election results...")
     
