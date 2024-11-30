@@ -16,7 +16,7 @@ def main():
 
     # Run leader election
     if device_type != "Keyboard":
-        from command_broadcast import listen,follower_listen
+        from command_broadcast import listen, follower_listen
         leader = elections.simulate_leader_election(devices)
         print(f"Elected leader: {leader}")
         
@@ -38,7 +38,8 @@ def main():
             print("Error: Could not find leader's IP address")
     elif device_type == "Leader":
         listen.listen_for_commands()
-    elif device_type == "Robot"
+    elif device_type == "Robot":
+        listen.follower_listen()
 
 if __name__ == "__main__":
     main()
