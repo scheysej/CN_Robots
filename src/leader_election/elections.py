@@ -150,12 +150,22 @@ class Robot:
             if robot.id != self.id:
                 robot.receive_leader_announcement(self.id)
 
-    def receive_leader_announcement(self, leader_id):
+    def receive_leader_announcement(self):
         # Receive the leader announcement and recognize the leader.
-        print(f"Robot {self.id} recognizes Robot {leader_id} as the leader.")
-        identity = {
+        print(f"Robot {self.id} recognizes Robot {self.leader_id} as the leader.")
+
+        if self.type != "Keyboard":
+            identity = {
+                'id': self.id,
+                'type': "Robot",
+                'serial': "100000232442",
+                'name': "Adeept"
+            }
+
+        if self.id == self.leader_id:
+            identity = {
             'id': self.id,
-            'type': self.type,
+            'type': "Leader",
             'serial': "100000232442",
             'name': "Adeept"
         }
@@ -261,7 +271,7 @@ def simulate_leader_election(devices):
             if device["DeviceType"] == "Keyboard":
                 keyboard = device
 
-        robot.receive_leader_announcement(robot.id, robot.leader_id)
+        robot.receive_leader_announcement(robot)
         announce_leader_to_keyboard(keyboard, robot.leader_id)
         return robot.leader_id
 
