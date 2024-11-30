@@ -16,7 +16,8 @@ def main():
 
     # Run leader election
     if device_type != "Keyboard":
-        from command_broadcast import listen, follower_listen
+        from command_broadcast import listen
+        from command_broadcast import follower_listen
         leader = elections.simulate_leader_election(devices)
         print(f"Elected leader: {leader}")
         
@@ -39,7 +40,7 @@ def main():
     elif device_type == "Leader":
         listen.listen_for_commands()
     elif device_type == "Robot":
-        listen.follower_listen()
+        follower_listen.listen_for_commands()
 
 if __name__ == "__main__":
     main()
