@@ -271,7 +271,7 @@ def simulate_leader_election(devices):
             if device["DeviceType"] == "Keyboard":
                 keyboard = device
 
-        robot.receive_leader_announcement(robot)
+        robot.receive_leader_announcement()
         announce_leader_to_keyboard(keyboard, robot.leader_id)
         return robot.leader_id
 
