@@ -4,6 +4,7 @@ import movement
 import time
 import Amove as am
 import aservo
+from broadcast import broadcast_message
 from utils.device_identity import get_device_identity
 
 port = 65009
@@ -22,6 +23,7 @@ def listen_for_commands():
 		while True:
 			# Receive broadcast message
 			data, addr = sock.recvfrom(1024)  # Buffer size of 1024 bytes
+			broadcast_message(data)
 			message = json.loads(data.decode())
 
 			name = "Adeept"
