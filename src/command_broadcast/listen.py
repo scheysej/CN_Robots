@@ -8,7 +8,7 @@ from utils.device_identity import get_device_identity
 
 port = 65010
 
-def listen_for_commands():
+def listen_for_commands(leader):
 	# Set up the UDP socket
 	sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 	sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)

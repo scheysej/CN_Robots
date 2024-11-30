@@ -140,6 +140,7 @@ class Robot:
             + " from "
             + str(leader_id)
         )
+        self.type = "Leader"
         return leader_id
 
     def announce_leader(self, robots):
@@ -151,6 +152,12 @@ class Robot:
     def receive_leader_announcement(self, leader_id):
         # Receive the leader announcement and recognize the leader.
         print(f"Robot {self.id} recognizes Robot {leader_id} as the leader.")
+        identity = {
+            'id': self.id,
+            'type': self.type,
+            'serial': "100000232442",
+            'name': "Adeept"
+        }
 
     def broadcast_leader(self, stop_event, robots):
         # Broadcast that this robot is the leader to all others until acknowledged.
