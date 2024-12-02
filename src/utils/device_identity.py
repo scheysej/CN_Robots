@@ -49,8 +49,8 @@ def get_device_identity():
         robot_type = input("What type of robot is this? (Adeept or OSOYOO)")
         robot_type = robot_type.lower()
 
-        if(robot_type == "adeept" or robot_type == "osoyoo")
-        break
+        if(robot_type == "adeept" or robot_type == "osoyoo"):
+            break
     
 	    
     identity = {
