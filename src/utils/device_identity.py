@@ -44,14 +44,20 @@ def get_device_identity():
     device_type = "Robot"
     if find_keyboard_device():
         device_type = "Keyboard"
-	
-    name = "Adeept"
+
+    while True:
+        robot_type = input("What type of robot is this? (Adeept or OSOYOO)")
+        robot_type = robot_type.lower()
+
+        if(robot_type == "adeept" or robot_type == "osoyoo")
+        break
     
+	    
     identity = {
         'id': device_id,
         'type': device_type,
         'serial': serial,
-	    'name':name
+	    'name': robot_type
     }
     
     with open(identity_file, 'w') as f:

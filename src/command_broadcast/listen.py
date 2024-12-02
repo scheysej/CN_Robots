@@ -26,61 +26,61 @@ def listen_for_commands():
 			broadcast_message(data)
 			message = json.loads(data.decode())
 
-			name = "Adeept"
+			name = robot.name
 			if message['movement_y'] == "forward":
 				print(message['movement_y'])
 
-				am.Motor(1,1,100)	
+				#am.Motor(1,1,100)	
 
 				# am.forward(100,1)
 				# time.sleep(3)
 
-				# if name == "Adeept":
-				# 	am.forward(100)
-				# elif name == "Osoyoo":
-				# 	movement.forward()
+				if name == "Adeept":
+					am.forward(100)
+				elif name == "Osoyoo":
+					movement.forward()
 
 			elif message['movement_y'] == "stop":
 				print(message['movement_y'])
-				am.motorStop()
+				# am.motorStop()
 
-				# if name == "Adeept":
-				# 	am.destroy()
-				# elif name == "Osoyoo":
-				# 	movement.stopcar()
+				if name == "Adeept":
+					am.motorStop()
+				elif name == "Osoyoo":
+					movement.stopcar()
 					
 			elif message['movement_y'] == "backward":
 				print(message['movement_y'])
-				am.Motor(1,-1,100)
-				# if name == "Adeept":
-				# 	am.backward(100)
-				# elif name == "Osoyoo":
-				# 	movement.backward()
+				# am.Motor(1,-1,100)
+				if name == "Adeept":
+					am.backward(100)
+				elif name == "Osoyoo":
+					movement.backward()
 				
 			if message['movement_x'] == "left":
 				print(message['movement_x'])
-				aservo.left()
+				# aservo.left()
 
-				# if name == "Adeept":
-				# 	aservo.left()
-				# elif name == "Osoyoo":
-				# 	movement.steer(movement.LEFT)
+				if name == "Adeept":
+					aservo.left()
+				elif name == "Osoyoo":
+					movement.steer(movement.LEFT)
 			elif message['movement_x'] == "right":
 				print(message['movement_x'])
-				aservo.right()
+				# aservo.right()
 
-				# if name == "Adeept":
-				# 	aservo.right()
-				# elif name == "Osoyoo":
-				# 	movement.steer(movement.RIGHT)
+				if name == "Adeept":
+					aservo.right()
+				elif name == "Osoyoo":
+					movement.steer(movement.RIGHT)
 			elif message['movement_x'] == "center":
 				print(message['movement_x'])
-				aservo.center()
+				# aservo.center()
 
-				# if name == "Adeept":
-				# 	aservo.center()
-				# elif name == "Osoyoo":
-				# 	movement.steer(movement.CENTER)
+				if name == "Adeept":
+					aservo.center()
+				elif name == "Osoyoo":
+					movement.steer(movement.CENTER)
 	except KeyboardInterrupt:
 		am.destroy()
 		print("The last message was: ", message)
