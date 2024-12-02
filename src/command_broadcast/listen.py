@@ -1,9 +1,7 @@
 import socket
 import json
-import movement
 import time
-import Amove as am
-import aservo
+
 from broadcast import broadcast_message
 from utils.device_identity import get_device_identity
 
@@ -11,6 +9,12 @@ port = 65009
 
 def listen_for_commands():
 	robot = get_device_identity()
+	if(robot.name == "Adeept"):
+		import Amove as am
+		import aservo
+	elif (robot.name == "Osoyoo"):
+		import movement
+
 	# Set up the UDP socket
 	sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 	sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
