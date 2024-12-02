@@ -78,6 +78,7 @@ class KeyboardController:
     def create_message(self, x_command, y_command):
         """Create a signed message that can be validated by the leader."""
         message = {
+            "type": "KEYBOARD_COMMAND",
             "id": self.id,
             "device_type": self.device_type,
             "ip": self.ip,

@@ -63,7 +63,7 @@ def get_device_identity():
     with open(identity_file, 'w') as f:
         json.dump(identity, f)
     
-    return device_id, device_type 
+    return device_id, device_type, name
 
 def write_device_identity(content):
     project_root = find_project_root()
