@@ -218,7 +218,6 @@ def announce_leader_to_keyboard(keyboard, leader_id):
 
 def simulate_leader_election(devices):
     # Create robots based on discovered_robots but generate ElectionID here
-    # robots = [Robot() for _ in enumerate(devices)]
     robot = None
 
     # Robot creates its own election id
@@ -227,10 +226,10 @@ def simulate_leader_election(devices):
         # finds the raspberry pi in the list of all the devices
         if (device["DeviceType"] != "Keyboard") and (device["IP"] == get_local_ip()):
             robot = Robot(
-                device["ID"],
-                device["Status"],
+                device["DeviceID"],
                 device["IP"],
                 device["DeviceType"],
+                device["RobotBrand"]
                 devices,
             )  # Creates the election id and defines the robot
 

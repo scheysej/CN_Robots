@@ -13,11 +13,12 @@ def main():
     print(f"Discovered devices: {devices}")
     
     # Run leader election
-    # if device_type != "Keyboard":
-    #     from command_broadcast import listen
-    #     from command_broadcast import follower_listen
-    #     leader = elections.simulate_leader_election(devices)
-    #     print(f"Elected leader: {leader}")
+    if robot_identity['device_type'] == "Robot":
+        from command_broadcast import listen
+        from command_broadcast import follower_listen
+        
+        leader = elections.simulate_leader_election(devices)
+        print(f"Elected leader: {leader}")
         
     
     # if device_type == "Keyboard":
