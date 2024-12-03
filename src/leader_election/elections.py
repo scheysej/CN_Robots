@@ -140,16 +140,15 @@ class Robot:
 
         identity = None
 
-        if self.id == self.leader_id:
+        if str(self.id) == str(self.leader_id):
             identity = {
                 'device_id': self.id,
                 'device_type': self.device_type,
                 'robot_brand': self.robot_brand,
                 'role': "leader",
             }
-        else:
-            if self.id == self.leader_id:
-                identity = {
+        elif self.id == self.leader_id:
+            identity = {
                 'device_id': self.id,
                 'device_type': self.device_type,
                 'robot_brand': self.robot_brand,

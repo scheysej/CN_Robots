@@ -20,8 +20,8 @@ import broadcast
 
 class KeyboardController:
     def __init__(self, leader_ip=None, leader_id=None):
-        keyboard = get_device_identity()
-        self.id = keyboard["device_id"]
+        devc = get_device_identity()
+        self.id = devc["device_id"]
         self.device_type = "Keyboard"
         self.ip = self.get_local_ip()
         self.status = "Active"

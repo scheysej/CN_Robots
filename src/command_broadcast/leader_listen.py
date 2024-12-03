@@ -11,6 +11,7 @@ def listen_for_commands():
 	robot_identity = get_device_identity()
 	name = robot_identity['robot_brand']
 	
+	print("ROBOT NAME IS")
 	if(name == "adeept"):
 		import Amove as am
 		import aservo
