@@ -13,32 +13,32 @@ def main():
     print(f"Discovered devices: {devices}")
     
     # Run leader election
-    if device_type != "Keyboard":
-        from command_broadcast import listen
-        from command_broadcast import follower_listen
-        leader = elections.simulate_leader_election(devices)
-        print(f"Elected leader: {leader}")
+    # if device_type != "Keyboard":
+    #     from command_broadcast import listen
+    #     from command_broadcast import follower_listen
+    #     leader = elections.simulate_leader_election(devices)
+    #     print(f"Elected leader: {leader}")
         
     
-    if device_type == "Keyboard":
-        elected_leader = elections.keyboard_listen_election(devices)
-        if elected_leader:
-            # Find leader's IP from devices list
-            leader_ip = None
-            for device in devices:
-                if device["DeviceType"] != "Keyboard" and str(device["ID"]) == str(elected_leader):
-                    leader_ip = device["IP"]
-                    break
+    # if device_type == "Keyboard":
+    #     elected_leader = elections.keyboard_listen_election(devices)
+    #     if elected_leader:
+    #         # Find leader's IP from devices list
+    #         leader_ip = None
+    #         for device in devices:
+    #             if device["DeviceType"] != "Keyboard" and str(device["ID"]) == str(elected_leader):
+    #                 leader_ip = device["IP"]
+    #                 break
         
-        if leader_ip:
-            controller = KeyboardController(leader_ip=leader_ip, leader_id=elected_leader)
-            controller.run()  # Start the controller logic
-        else:
-            print("Error: Could not find leader's IP address")
-    elif device_type == "Leader":
-        listen.listen_for_commands()
-    elif device_type == "Robot":
-        follower_listen.listen_for_commands()
+    #     if leader_ip:
+    #         controller = KeyboardController(leader_ip=leader_ip, leader_id=elected_leader)
+    #         controller.run()  # Start the controller logic
+    #     else:
+    #         print("Error: Could not find leader's IP address")
+    # elif device_type == "Leader":
+    #     listen.listen_for_commands()
+    # elif device_type == "Robot":
+    #     follower_listen.listen_for_commands()
 
 if __name__ == "__main__":
     main()
