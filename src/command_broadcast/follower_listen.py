@@ -38,51 +38,51 @@ def listen_for_commands():
 				# am.forward(100,1)
 				# time.sleep(3)
 
-				if name == "Adeept":
+				if name == "adeept":
 					am.forward(100)
-				elif name == "Osoyoo":
+				elif name == "osoyoo":
 					movement.forward()
 
 			elif message['movement_y'] == "stop":
 				print(message['movement_y'])
 				# am.motorStop()
 
-				if name == "Adeept":
+				if name == "adeept":
 					am.motorStop()
-				elif name == "Osoyoo":
+				elif name == "osoyoo":
 					movement.stopcar()
 					
 			elif message['movement_y'] == "backward":
 				print(message['movement_y'])
 				# am.Motor(1,-1,100)
-				if name == "Adeept":
+				if name == "adeept":
 					am.backward(100)
-				elif name == "Osoyoo":
+				elif name == "osoyoo":
 					movement.backward()
 				
 			if message['movement_x'] == "left":
 				print(message['movement_x'])
 				# aservo.left()
 
-				if name == "Adeept":
+				if name == "adeept":
 					aservo.left()
-				elif name == "Osoyoo":
+				elif name == "osoyoo":
 					movement.steer(movement.LEFT)
 			elif message['movement_x'] == "right":
 				print(message['movement_x'])
 				# aservo.right()
 
-				if name == "Adeept":
+				if name == "adeept":
 					aservo.right()
-				elif name == "Osoyoo":
+				elif name == "osoyoo":
 					movement.steer(movement.RIGHT)
 			elif message['movement_x'] == "center":
 				print(message['movement_x'])
 				# aservo.center()
 
-				if name == "Adeept":
+				if name == "adeept":
 					aservo.center()
-				elif name == "Osoyoo":
+				elif name == "osoyoo":
 					movement.steer(movement.CENTER)
 	except KeyboardInterrupt:
 		am.destroy()
