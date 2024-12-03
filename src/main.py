@@ -37,7 +37,7 @@ def main():
         print(f"Elected leader: {leader}")
         
     
-    if robot_identity['device_type'] == "Keyboard":
+    if robot_identity['device_type'] == "keyboard":
         elected_leader_id = elections.keyboard_listen_election(devices)
         
         if elected_leader_id:
