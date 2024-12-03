@@ -8,8 +8,9 @@ from utils.device_identity import get_device_identity
 port = 65009
 
 def listen_for_commands():
-	r,s,name = get_device_identity()
-	print("ROBOT IS " + name)
+	robot_identity = get_device_identity()
+	name = robot_identity['robot_brand']
+	
 	if(name == "adeept"):
 		import Amove as am
 		import aservo

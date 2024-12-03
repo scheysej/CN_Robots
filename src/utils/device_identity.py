@@ -8,6 +8,7 @@ Instructor: Dr. Utayba Mohammad
 import os
 import json
 import glob
+import random
 
 def find_project_root():
     """Find the CN_Robots directory"""
@@ -33,6 +34,7 @@ def get_device_identity():
 
     
     device_type = "robot"
+
     if find_keyboard_device():
         device_type = "keyboard"
 
@@ -43,6 +45,8 @@ def get_device_identity():
         if(robot_brand == "adeept" or robot_brand == "osoyoo" or robot_brand == "NA"):
             break
     
+    device_id = random.randint(1_000_000, 2_000_000)
+
     identity = {
         'device_id': device_id,
         'device_type': device_type,

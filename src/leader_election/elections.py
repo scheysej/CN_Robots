@@ -144,16 +144,16 @@ class Robot:
             identity = {
                 'device_id': self.id,
                 'device_type': self.device_type,
-                'robot_brand': self.robot_brand
-                'role': "Leader",
+                'robot_brand': self.robot_brand,
+                'role': "leader",
             }
-        else
+        else:
             if self.id == self.leader_id:
                 identity = {
                 'device_id': self.id,
                 'device_type': self.device_type,
-                'robot_brand': self.robot_brand
-                'role': "Follower",
+                'robot_brand': self.robot_brand,
+                'role': "follower",
             }
 
         write_device_identity(identity)
@@ -197,13 +197,12 @@ def simulate_leader_election(devices):
                 device["DeviceID"],
                 device["IP"],
                 device["DeviceType"],
-                device["RobotBrand"]
-                devices,
-            )  # Creates the election id and defines the robot
+                device["RobotBrand"],
+                devices
+            )  
 
     while True:  # Keep trying until we get a valid election
         stop_event = threading.Event()
-        threads = []
 
         print(
             f"I am starting broadcast [{robot.id}] with my ElectionID of {robot.election_id}"
