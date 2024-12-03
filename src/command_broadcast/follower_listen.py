@@ -39,7 +39,7 @@ def listen_for_commands():
 				# time.sleep(3)
 
 				if name == "adeept":
-					am.forward(100)
+					am.forward(100, 1)
 				elif name == "osoyoo":
 					movement.forward()
 
