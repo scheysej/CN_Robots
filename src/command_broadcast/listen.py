@@ -8,11 +8,12 @@ from utils.device_identity import get_device_identity
 port = 65009
 
 def listen_for_commands():
-	robot = get_device_identity()
-	if(robot.name == "adeept"):
+	device_id, device_type, name = get_device_identity()
+	print("TROBOT NAME IS ", name)
+	if(name == "adeept"):
 		import Amove as am
 		import aservo
-	elif (robot.name == "osoyoo"):
+	elif (name == "osoyoo"):
 		import movement
 
 	# Set up the UDP socket
@@ -30,12 +31,12 @@ def listen_for_commands():
 
 			message = json.loads(data.decode())
 
-			if(message['type'] is not "KEYBOARD_COMMAND"):
+			if(message['type'] != "KEYBOARD_COMMAND"):
 				continue
 
 			broadcast_message(data)
 			
-			name = robot.name
+			name = name
 
 			if message['movement_y'] == "forward":
 				print(message['movement_y'])

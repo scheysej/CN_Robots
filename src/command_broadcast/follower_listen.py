@@ -6,11 +6,11 @@ from utils.device_identity import get_device_identity
 port = 65010
 
 def listen_for_commands():
-	robot = get_device_identity()
-	if(robot.name == "Adeept"):
+	device_id, device_type, name = get_device_identity()
+	if(name == "Adeept"):
 		import Amove as am
 		import aservo
-	elif (robot.name == "Osoyoo"):
+	elif (name == "Osoyoo"):
 		import movement
 	# Set up the UDP socket
 	sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -26,7 +26,7 @@ def listen_for_commands():
 			data, addr = sock.recvfrom(1024)  # Buffer size of 1024 bytes
 			message = json.loads(data.decode())
 
-			name = robot.name
+			name = name
 			if message['movement_y'] == "forward":
 				print(message['movement_y'])
 
