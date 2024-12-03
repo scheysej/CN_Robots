@@ -8,7 +8,7 @@ port = 65010
 def listen_for_commands():
 	robot_identity = get_device_identity()
 
-	name = robot_identity['robot_brand']
+	name = robot_identity["robot_brand"]
 	
 	if(name == "adeept"):
 		import Amove as am

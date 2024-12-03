@@ -42,7 +42,7 @@ def get_device_identity():
         robot_brand = input("What type of robot is this? (Adeept or OSOYOO or NA)")
         robot_brand = robot_brand.lower()
 
-        if(robot_brand == "adeept" or robot_brand == "osoyoo" or robot_brand == "NA"):
+        if(robot_brand == "adeept" or robot_brand == "osoyoo" or robot_brand == "na"):
             break
     
     device_id = random.randint(1_000_000, 2_000_000)

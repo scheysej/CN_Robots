@@ -140,7 +140,7 @@ class Robot:
 
         identity = None
 
-        if self.type == "Robot" and self.id == self.leader_id:
+        if self.id == self.leader_id:
             identity = {
                 'device_id': self.id,
                 'device_type': self.device_type,
