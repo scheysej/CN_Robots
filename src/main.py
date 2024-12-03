@@ -6,7 +6,7 @@ import time
 
 def main():
     # Get device identity
-    _, device_type = get_device_identity()
+    robot_identity = get_device_identity() 
 
     # Discover network devices
     devices = discover.discover_neighbouring_devices()

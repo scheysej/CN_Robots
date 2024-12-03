@@ -159,7 +159,7 @@ class Robot:
                 'id': self.id,
                 'type': "Robot",
                 'serial': "100000232442",
-                'name': "Adeept"
+                'name': "osoyoo"
             }
 
         if self.id == self.leader_id:
@@ -167,7 +167,7 @@ class Robot:
             'id': self.id,
             'type': "Leader",
             'serial': "100000232442",
-            'name': "Adeept"
+            'name': "osoyoo"
         }
 
         write_device_identity(identity)

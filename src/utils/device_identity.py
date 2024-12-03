@@ -29,7 +29,7 @@ def get_device_identity():
     if os.path.exists(identity_file):
         with open(identity_file, 'r') as f:
             identity = json.load(f)
-            return identity['id'], identity['type']
+            return identity
     
     try:
         with open('/proc/cpuinfo', 'r') as f:
@@ -46,24 +46,24 @@ def get_device_identity():
         device_type = "Keyboard"
 
     while True:
-        robot_type = input("What type of robot is this? (Adeept or OSOYOO)")
-        robot_type = robot_type.lower()
+        robot_brand = input("What type of robot is this? (Adeept or OSOYOO)")
+        robot_brand = robot_brand.lower()
 
-        if(robot_type == "adeept" or robot_type == "osoyoo"):
+        if(robot_brand == "adeept" or robot_brand == "osoyoo"):
             break
     
 	    
     identity = {
-        'id': device_id,
-        'type': device_type,
+        'device_id': device_id,
+        'device_type': device_type,
         'serial': serial,
-	    'name': robot_type
+	    'robot_brand': robot_brand
     }
     
     with open(identity_file, 'w') as f:
         json.dump(identity, f)
     
-    return device_id, device_type, name
+    return identity
 
 def write_device_identity(content):
     project_root = find_project_root()
@@ -71,8 +71,6 @@ def write_device_identity(content):
 
     with open(identity_file, 'w') as f:
         json.dump(content, f)
-
-
 
 
 if __name__ == "__main__":
