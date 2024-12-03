@@ -49,12 +49,12 @@ def main():
                     break
         
 
-        if leader_ip:
-            controller = KeyboardController(leader_ip=leader_ip, leader_id=elected_leader_id)
-            controller.run()  # Start the controller logic
-        else:
-            print("Error: Could not find leader's IP address")
-    
+            if leader_ip:
+                controller = KeyboardController(leader_ip=leader_ip, leader_id=elected_leader_id)
+                controller.run()  # Start the controller logic
+            else:
+                print("Error: Could not find leader's IP address")
+        
 
     # Get device identity again as its updated after leader election    
     robot_identity = get_device_identity() 
