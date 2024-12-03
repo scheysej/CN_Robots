@@ -147,7 +147,7 @@ class Robot:
                 'robot_brand': self.robot_brand,
                 'role': "leader",
             }
-        elif self.id == self.leader_id:
+        else:
             identity = {
                 'device_id': self.id,
                 'device_type': self.device_type,
