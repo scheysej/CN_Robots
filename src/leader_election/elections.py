@@ -22,22 +22,21 @@ def get_local_ip():
 
 
 class Robot:
-    def __init__(self, robot_id, status, ip, type, devices):
+    def __init__(self, robot_id, ip, device_type, brand, devices):
         self.id = robot_id
-        self.status = status
         self.ip = ip
-        self.device_type = type
+        self.device_type = device_type
+        self.robot_brand = brand
         self.election_id = random.randint(1, 100)
         self.is_leader = False
         self.leader_id = ""
-        self.received_robot_ids = []
         self.received_election_ids = []
         self.all_devices = devices
 
     def broadcast(self, stop_event):
         # Simulate broadcasting the robot's ElectionID to all other robots.
         broadcast_message = f"""
-            Type: ELECTION
+            MessageType: ELECTION
             RobotID: {self.id}
             ElectionID: {self.election_id}
         """
@@ -75,9 +74,6 @@ class Robot:
                     if sender_ip == get_local_ip():
                         continue
 
-                    # print("Received ", data)
-                    # print(self.all_devices)
-
                     message = data.decode().strip().splitlines()
 
                     if message[0].split(":")[1].strip() == "ELECTION":
@@ -109,12 +105,6 @@ class Robot:
             )
             print("Listening has stopped")
 
-    def receive_broadcast(self, message):
-        # Receive ElectionID from another robot and store it.
-        self.received_ids[message["RobotID"]] = message["ElectionID"]
-        print(
-            f"Robot {self.id} received ElectionID {message['ElectionID']} from Robot {message['RobotID']}"
-        )
 
     def decide_leader(self):
         # Decide the leader based on the highest ElectionID received, including its own.
@@ -144,51 +134,29 @@ class Robot:
         self.type = "Leader"
         return leader_id
 
-    def announce_leader(self, robots):
-        # Announce to all robots that this robot is the leader.
-        for robot in robots:
-            if robot.id != self.id:
-                robot.receive_leader_announcement(self.id)
-
-    def receive_leader_announcement(self):
+    def update_device_identity(self):
         # Receive the leader announcement and recognize the leader.
         print(f"Robot {self.id} recognizes Robot {self.leader_id} as the leader.")
 
-        if self.type != "Keyboard":
+        identity = None
+
+        if self.type == "Robot" and self.id == self.leader_id:
             identity = {
-                'id': self.id,
-                'type': "Robot",
-                'serial': "100000232442",
-                'name': "osoyoo"
+                'device_id': self.id,
+                'device_type': self.device_type,
+                'robot_brand': self.robot_brand
+                'role': "Leader",
+            }
+        else
+            if self.id == self.leader_id:
+                identity = {
+                'device_id': self.id,
+                'device_type': self.device_type,
+                'robot_brand': self.robot_brand
+                'role': "Follower",
             }
 
-        if self.id == self.leader_id:
-            identity = {
-            'id': self.id,
-            'type': "Leader",
-            'serial': "100000232442",
-            'name': "osoyoo"
-        }
-
         write_device_identity(identity)
-
-
-
-    def broadcast_leader(self, stop_event, robots):
-        # Broadcast that this robot is the leader to all others until acknowledged.
-        while not stop_event.is_set():
-            print(f"Leader Robot {self.id} broadcasting that it is the leader.")
-            for robot in robots:
-                if robot.id != self.id:
-                    robot.receive_leader_announcement(self.id)
-            time.sleep(1)  # Leader broadcasts every second
-
-
-def notify_joystick_of_leader(leader_robot):
-    """Notify joystick of the elected leader."""
-    leader_info = {"LEADER_IP": leader_robot.ip, "LEADER_ID": leader_robot.id}
-    print("Joystick notified of leader:", leader_info)
-    return leader_info
 
 
 def announce_leader_to_keyboard(keyboard, leader_id):
@@ -224,7 +192,7 @@ def simulate_leader_election(devices):
     for device in devices:
         # Loop through all the devices in the fleet, if the device is a robot and has the same ip address (essentially)
         # finds the raspberry pi in the list of all the devices
-        if (device["DeviceType"] != "Keyboard") and (device["IP"] == get_local_ip()):
+        if (device["DeviceType"] != "keyboard") and (device["IP"] == get_local_ip()):
             robot = Robot(
                 device["DeviceID"],
                 device["IP"],
@@ -267,10 +235,10 @@ def simulate_leader_election(devices):
 
         keyboard = None
         for device in devices:
-            if device["DeviceType"] == "Keyboard":
+            if device["DeviceType"] == "keyboard":
                 keyboard = device
 
-        robot.receive_leader_announcement()
+        robot.update_device_identity()
         announce_leader_to_keyboard(keyboard, robot.leader_id)
         return robot.leader_id
 
@@ -284,7 +252,7 @@ def keyboard_listen_election(devices):
     server_socket.listen(5)
     
     robot_votes = {}  # Track each robot's leader vote
-    robot_count = sum(1 for device in devices if device["DeviceType"] != "Keyboard")
+    robot_count = sum(1 for device in devices if device["DeviceType"] != "keyboard")
     
     print("Keyboard listening for leader election results...")
     

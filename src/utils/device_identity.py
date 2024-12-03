@@ -30,34 +30,24 @@ def get_device_identity():
         with open(identity_file, 'r') as f:
             identity = json.load(f)
             return identity
+
     
-    try:
-        with open('/proc/cpuinfo', 'r') as f:
-            for line in f:
-                if line.startswith('Serial'):
-                    serial = line.split(':')[1].strip()
-                    device_id = int(serial[-6:], 16)
-                    break
-    except:
-        raise Exception("Could not read Raspberry Pi serial number")
-    
-    device_type = "Robot"
+    device_type = "robot"
     if find_keyboard_device():
-        device_type = "Keyboard"
+        device_type = "keyboard"
 
     while True:
-        robot_brand = input("What type of robot is this? (Adeept or OSOYOO)")
+        robot_brand = input("What type of robot is this? (Adeept or OSOYOO or NA)")
         robot_brand = robot_brand.lower()
 
-        if(robot_brand == "adeept" or robot_brand == "osoyoo"):
+        if(robot_brand == "adeept" or robot_brand == "osoyoo" or robot_brand == "NA"):
             break
     
-	    
     identity = {
         'device_id': device_id,
         'device_type': device_type,
-        'serial': serial,
-	    'robot_brand': robot_brand
+	    'robot_brand': robot_brand,
+        'role': "undecided"
     }
     
     with open(identity_file, 'w') as f:
