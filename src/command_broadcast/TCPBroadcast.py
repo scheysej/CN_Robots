@@ -10,7 +10,7 @@ def broadcast_message(message, hostIP, numOfRobots):
     # sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     # sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    sock.listen(5) //change to number of robots
+    sock.listen(5) #change to number of robots
 
     sock.bind((hostIP, port))
 
