@@ -13,7 +13,7 @@ def main():
 	#    'robot_brand': robot_brand,
     #    'role': "undecided"
     # }
-
+    leader = ""
     robot_identity = get_device_identity() 
 
     # Discover network devices
@@ -62,7 +62,7 @@ def main():
     if robot_identity['role'] == "leader":
         leader_listen.listen_for_commands(devices)
     elif robot_identity['role'] == "follower":
-        follower_listen.listen_for_commands(devices)
+        follower_listen.listen_for_commands(devices, leader)
 
 if __name__ == "__main__":
     main()
