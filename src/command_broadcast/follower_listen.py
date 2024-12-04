@@ -5,11 +5,11 @@ from utils.device_identity import get_device_identity
 
 port = 65010
 
-def listen_for_commands(devices):
+def listen_for_commands(devices, leader):
 	robot_identity = get_device_identity()
 	name = robot_identity["robot_brand"]
 
-	leader = getLeader(devices, robot_identity)
+	leaderRobot = getLeader(devices, leader)
 
 	
 	if(name == "adeept"):
@@ -102,7 +102,7 @@ def listen_for_commands(devices):
 		client_socket.close()
 		print("Socket closed.")
 
-def getLeader(devices, robot_identity):
+def getLeader(devices, leaderID):
 	for device in devices:
-		if device['DeviceID'] == robot_identity['device_id']:
+		if device['DeviceID'] == leaderID:
 			return device
