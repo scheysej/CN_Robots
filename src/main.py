@@ -62,6 +62,7 @@ def main():
     if robot_identity['role'] == "leader":
         leader_listen.listen_for_commands(devices)
     elif robot_identity['role'] == "follower":
+        print("ALL HAIL", leader)
         follower_listen.listen_for_commands(devices, leader)
 
 if __name__ == "__main__":
