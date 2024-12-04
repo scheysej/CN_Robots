@@ -14,7 +14,7 @@ import RPi.GPIO as GPIO
 # Initialise the PCA9685 using the default address (0x40).
 pwm = Adafruit_PCA9685.PCA9685()
  
-servo_pin = 0 #  servo connect to PWM 15
+servo_pin = 15 #  servo connect to PWM 15
 
 RIGHT = 500 #Steer servo car turn right
 CENTER= 425 #Steer servo car go forward
