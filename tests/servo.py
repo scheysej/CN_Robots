@@ -12,13 +12,13 @@ import time
 import Adafruit_PCA9685
 import RPi.GPIO as GPIO
 # Initialise the PCA9685 using the default address (0x40).
-pwm = Adafruit_PCA9685.PCA9685(0x5f)
+pwm = Adafruit_PCA9685.PCA9685()
  
-servo_pin = 0 #  servo connect to PWM 15
+servo_pin = 15 #  servo connect to PWM 15
 
-RIGHT = 220 #Steer servo car turn right
-CENTER= 320 #Steer servo car go forward
-LEFT = 420 #Steer servo car turn left
+RIGHT = 465 #Steer servo car turn right
+CENTER= 425 #Steer servo car go forward
+LEFT = 385 #Steer servo car turn left
 
 # Set frequency to 60hz, good for servos.
 pwm.set_pwm_freq(60)
