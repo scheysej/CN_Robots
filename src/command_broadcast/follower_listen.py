@@ -11,6 +11,8 @@ def listen_for_commands(devices, leader):
 
 	leaderRobot = getLeader(devices, leader)
 
+	print("I GOT THE LEADER AND ITS")
+	print(leaderRobot)
 	
 	if(name == "adeept"):
 		import Amove as am
