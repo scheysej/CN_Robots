@@ -40,7 +40,7 @@ def listen_for_commands(devices):
 				print("received trash")
 				continue
 
-			broadcast_message(data,leader['IP'])
+			broadcast_message(data,leader['IP'],len(devices))
 			
 			name = name
 			print("got sth good")
