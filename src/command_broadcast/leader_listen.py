@@ -51,7 +51,7 @@ def listen_for_commands():
 				# time.sleep(3)
 
 				if name == "adeept":
-					am.forward(100, 1)
+					am.forward(25, 1)
 				elif name == "osoyoo":
 					movement.forward()
 
@@ -68,7 +68,7 @@ def listen_for_commands():
 				print(message['movement_y'])
 				# am.Motor(1,-1,100)
 				if name == "adeept":
-					am.backward(100)
+					am.backward(25)
 				elif name == "osoyoo":
 					movement.backward()
 				
