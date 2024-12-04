@@ -105,6 +105,7 @@ def listen_for_commands(devices, leader):
 
 def getLeader(devices, leaderID):
 	for device in devices:
+		print(device['DeviceID'])
 		if str(device['DeviceID']) == str(leaderID):
 			print(device['DeviceID'])
 			print(leaderID)
