@@ -23,6 +23,7 @@ def listen_for_commands(devices, leader):
 
 	client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
+	print(leaderRobot)
 	host = leaderRobot['IP']
 
 	# Connect the socket to the host
