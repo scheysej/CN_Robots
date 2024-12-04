@@ -2,16 +2,14 @@ import socket
 import json
 import time
 
-from TCPBroadcast import broadcast_message
+from broadcast import broadcast_message
 from utils.device_identity import get_device_identity
 
 port = 65009
 
-def listen_for_commands(devices):
+def listen_for_commands():
 	robot_identity = get_device_identity()
 	name = robot_identity['robot_brand']
-
-	leader = getLeader(devices, robot_identity)
 	
 	print("ROBOT NAME IS")
 	if(name == "adeept"):
@@ -23,7 +21,6 @@ def listen_for_commands(devices):
 	# Set up the UDP socket
 	sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 	sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
-
 
 	# Bind the socket to listen on all available interfaces
 	sock.bind(("", port))
@@ -40,7 +37,7 @@ def listen_for_commands(devices):
 				print("received trash")
 				continue
 
-			broadcast_message(data,leader['IP'],len(devices))
+			broadcast_message(data)
 			
 			name = name
 			print("got sth good")
@@ -106,9 +103,3 @@ def listen_for_commands(devices):
 	finally:
 		sock.close()
 		print("Socket closed.")
-
-
-def getLeader(devices, robot_identity):
-	for device in devices:
-		if device['DeviceID'] == robot_identity['device_id']:
-			return device
