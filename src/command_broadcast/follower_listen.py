@@ -5,10 +5,12 @@ from utils.device_identity import get_device_identity
 
 port = 65010
 
-def listen_for_commands():
+def listen_for_commands(devices):
 	robot_identity = get_device_identity()
-
 	name = robot_identity["robot_brand"]
+
+	leader = getLeader(devices, robot_identity)
+
 	
 	if(name == "adeept"):
 		import Amove as am
@@ -16,17 +18,22 @@ def listen_for_commands():
 	elif (name == "osoyoo"):
 		import movement
 	# Set up the UDP socket
-	sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-	sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
+	# sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+	# sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
 
-	# Bind the socket to listen on all available interfaces
-	sock.bind(("", port))
-	print(f"Listening for broadcast messages on port {port}...")
+	client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+	host = leader['IP']
+
+	# Connect the socket to the host
+	client_socket.connect((host, port))
+
+	print(f"Listening for messages on port {port} from leader: {host}")
 
 	try:
 		while True:
 			# Receive broadcast message
-			data, addr = sock.recvfrom(1024)  # Buffer size of 1024 bytes
+			data = client_socket.recvfrom(1024)  # Buffer size of 1024 bytes
 			message = json.loads(data.decode())
 
 			name = name
@@ -86,8 +93,14 @@ def listen_for_commands():
 					movement.steer(movement.CENTER)
 	except KeyboardInterrupt:
 		am.destroy()
+		client_socket.close()
 		print("The last message was: ", message)
 		print("\nListener stopped by user.")
 	finally:
-		sock.close()
+		client_socket.close()
 		print("Socket closed.")
+
+def getLeader(devices, robot_identity):
+	for device in devices:
+		if device['DeviceID'] == robot_identity['device_id']:
+			return device

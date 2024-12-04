@@ -60,9 +60,9 @@ def main():
     robot_identity = get_device_identity() 
 
     if robot_identity['role'] == "leader":
-        leader_listen.listen_for_commands()
+        leader_listen.listen_for_commands(devices)
     elif robot_identity['role'] == "follower":
-        follower_listen.listen_for_commands()
+        follower_listen.listen_for_commands(devices)
 
 if __name__ == "__main__":
     main()
