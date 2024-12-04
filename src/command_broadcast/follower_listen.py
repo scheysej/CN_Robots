@@ -26,6 +26,8 @@ def listen_for_commands(devices):
 	host = leader['IP']
 
 	# Connect the socket to the host
+
+	time.sleep(3)
 	client_socket.connect((host, port))
 
 	print(f"Listening for messages on port {port} from leader: {host}")
