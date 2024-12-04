@@ -104,6 +104,7 @@ def listen_for_commands(devices, leader):
 		print("Socket closed.")
 
 def getLeader(devices, leaderID):
+	print(leaderID)
 	for device in devices:
 		if device['DeviceID'] == leaderID:
 			return device
