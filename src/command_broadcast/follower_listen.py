@@ -35,15 +35,16 @@ def listen_for_commands():
 
 			name = name
    
+
+			if(message['type'] == "STOP_AND_PREPARE_FOR_REELECTION"):
+				print("RECEIVED MESSAGE TO STOP AND REELECT")
+				raise StopAndPrepareForReelection()
+
 			# TODO: Update the type as its actually getting the data from the leader
 			if(message['type'] != "KEYBOARD_COMMAND"):
 				print("received trash")
 				continue
 
-
-			if(message['type'] == "STOP_AND_PREPARE_FOR_REELECTION"):
-				print("RECEIVED MESSAGE TO STOP AND REELECT")
-				raise StopAndPrepareForReelection()
 
 			if message['movement_y'] == "forward":
 				print(message['movement_y'])

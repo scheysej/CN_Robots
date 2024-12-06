@@ -44,7 +44,7 @@ def listen_for_commands():
 			# If asked by keyboard to stop and prepare for reelection
 			# send to followers and then break
 			if(message['type'] == "STOP_AND_PREPARE_FOR_REELECTION"):
-				print("RECEIVED MESSAGE TO STOP AND REELECT. SENDING TO FOLLOWERS")
+				print("RECEIVED MESSAGE TO STOP AND REELECT. SENDING TO FOLLOWERS -")
 				broadcast_message(data)
 				raise StopAndPrepareForReelection()
 
