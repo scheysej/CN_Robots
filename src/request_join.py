@@ -15,7 +15,7 @@ def get_local_ip():
 
 LOCAL_IP_ADDRESS = get_local_ip()
 
-def listen_for_response(stop_event):
+def listen_for_response(lock, stop_event):
     with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as listen_socket:
         listen_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         listen_socket.bind(('', PORT))
@@ -31,11 +31,12 @@ def listen_for_response(stop_event):
                 if sender_ip == LOCAL_IP_ADDRESS:
                     continue  
 
-                message = data.decode().strip().splitlines()
+                message = data.decode().strip().splitlines()[0]
                 
-                message_type = message[0].split(":")[1].strip()
-                
-                if message_type == 'REQUEST_ACCEPTED':
+                # message_type = message[0].split(":")[1].strip()
+                print(message)
+                if message == 'ACCEPTED':
+                    with lock:
                         stop_event.set()
 
             except socket.timeout:
@@ -43,9 +44,7 @@ def listen_for_response(stop_event):
 
         print("Listening has stopped")
 
-def request_join(robot_identity, stop_event):
-    stop_event = threading.Event()
-    
+def request_join(robot_identity, stop_event):    
     request_message = f"""
         MessageType: REQUEST_TO_JOIN
         DeviceID: {robot_identity['device_id']}
@@ -55,6 +54,7 @@ def request_join(robot_identity, stop_event):
     """
 
     print("Broadcasting", request_message)
+
     with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as requesting_socket:
         requesting_socket.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
         print(f"Requesting to Join...")
@@ -65,8 +65,7 @@ def request_join(robot_identity, stop_event):
 
         print("Asking to join has stopped")
 
-    time.sleep(10)
-    stop_event.set()
+        
 
 
 def main(): 
@@ -74,19 +73,24 @@ def main():
     print("Device identity retrieved")
 
     stop_event = threading.Event()
+    lock = threading.Lock()
 
     # Create and start broadcast and listen threads
     broadcast_thread = threading.Thread(target=request_join, args=(robot_identity, stop_event), daemon=True)
-    listen_thread = threading.Thread(target=listen_for_response, args=(stop_event), daemon=True)
+    listen_thread = threading.Thread(target=listen_for_response, args=(lock, stop_event), daemon=True)
 
     broadcast_thread.start()
     listen_thread.start()
 
     # Run for 20 seconds, then stop both threads
     time.sleep(10)
-    
-    if(not stop_event.is_set()):
-            stop_event.set()
+    stop_event.set()
+
+    # Wait for both threads to finish
+    broadcast_thread.join()
+    # listen_thread.join()
+
+ 
 
 
 
