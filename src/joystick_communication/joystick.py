@@ -18,6 +18,9 @@ import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../command_broadcast')))
 import broadcast
 
+class StopAndPrepareForReelection(Exception):
+    pass
+
 class KeyboardController:
     def __init__(self, leader_ip=None, leader_id=None):
         devc = get_device_identity()
@@ -152,11 +155,14 @@ class KeyboardController:
                         sock.sendto(response, (device_info['IP'], 65099))
                         print("Response sent to: ", addr)
 
-                        devices.append(device_info)
+                        raise StopAndPrepareForReelection()
 
                         #message = json.loads(data.decode())
                         # broadcast.broadcast_message(data)
                         #print(f"Received response from {addr}: {message}")
+                except StopAndPrepareForReelection:
+                        print("Restarting...")
+                        os.execv(sys.executable, ['python'] + sys.argv)
                 except socket.timeout:
                         continue
                 except json.JSONDecodeError:
@@ -222,7 +228,6 @@ class KeyboardController:
                 # Only send message if commands have changed
                 message = self.create_message(self.x_command, self.y_command)
                 self.send_to_leader(message)
-                
                 time.sleep(0.1)  # Small delay to prevent CPU overuse
 
         except KeyboardInterrupt:
