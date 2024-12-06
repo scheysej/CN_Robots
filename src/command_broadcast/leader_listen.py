@@ -1,11 +1,19 @@
 import socket
 import json
 import time
+import os
+import sys
 
 from broadcast import broadcast_message
 from utils.device_identity import get_device_identity
 
 port = 65009
+
+#Custom exception to get the code to stop broadcasting if there
+#is a request for reelection, but to also then be able to run code after
+# specific to that requet
+class StopAndPrepareForReelection(Exception):
+    pass
 
 def listen_for_commands():
 	robot_identity = get_device_identity()
@@ -32,6 +40,13 @@ def listen_for_commands():
 			data, addr = sock.recvfrom(1024)  # Buffer size of 1024 bytes
 
 			message = json.loads(data.decode())
+   
+			# If asked by keyboard to stop and prepare for reelection
+			# send to followers and then break
+			if(message['type'] == "STOP_AND_PREPARE_FOR_REELECTION"):
+				print("RECEIVED MESSAGE TO STOP AND REELECT. SENDING TO FOLLOWERS")
+				broadcast_message(data)
+				raise StopAndPrepareForReelection()
 
 			if(message['type'] != "KEYBOARD_COMMAND"):
 				print("received trash")
@@ -96,10 +111,15 @@ def listen_for_commands():
 					aservo.center()
 				elif name == "osoyoo":
 					movement.steer(movement.CENTER)
+     
+	except StopAndPrepareForReelection:
+		print("Restarting...")
+		os.execv(sys.executable, ['python'] + sys.argv)
 	except KeyboardInterrupt:
 		am.destroy()
 		print("The last message was: ", message)
 		print("\nListener stopped by user.")
+  
 	finally:
 		sock.close()
 		print("Socket closed.")

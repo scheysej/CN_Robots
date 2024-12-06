@@ -2,8 +2,12 @@ import socket
 import json
 import time
 from utils.device_identity import get_device_identity
+import os
+import sys
 
 port = 65010
+class StopAndPrepareForReelection(Exception):
+    pass
 
 def listen_for_commands():
 	robot_identity = get_device_identity()
@@ -30,6 +34,17 @@ def listen_for_commands():
 			message = json.loads(data.decode())
 
 			name = name
+   
+			# TODO: Update the type as its actually getting the data from the leader
+			if(message['type'] != "KEYBOARD_COMMAND"):
+				print("received trash")
+				continue
+
+
+			if(message['type'] == "STOP_AND_PREPARE_FOR_REELECTION"):
+				print("RECEIVED MESSAGE TO STOP AND REELECT")
+				raise StopAndPrepareForReelection()
+
 			if message['movement_y'] == "forward":
 				print(message['movement_y'])
 
@@ -84,6 +99,9 @@ def listen_for_commands():
 					aservo.center()
 				elif name == "osoyoo":
 					movement.steer(movement.CENTER)
+	except StopAndPrepareForReelection:
+		print("Restarting...")
+		os.execv(sys.executable, ['python'] + sys.argv)
 	except KeyboardInterrupt:
 		am.destroy()
 		print("The last message was: ", message)

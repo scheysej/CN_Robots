@@ -6,6 +6,7 @@ import time
 import json
 import socket
 import threading
+
 def main():
     # Get device identity
     # Robot identity will look like
