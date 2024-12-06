@@ -54,15 +54,18 @@ def main():
                 controller.run()  # Start the controller logic
             else:
                 print("Error: Could not find leader's IP address")
-        
+
+        controller.dynamic_joining_listener() 
+  
 
     # Get device identity again as its updated after leader election    
     robot_identity = get_device_identity() 
-
-    if robot_identity['role'] == "leader":
-        leader_listen.listen_for_commands()
-    elif robot_identity['role'] == "follower":
-        follower_listen.listen_for_commands()
+    
+    if 'role' in robot_identity:
+        if robot_identity['role'] == "leader":
+            leader_listen.listen_for_commands()
+        elif robot_identity['role'] == "follower":
+            follower_listen.listen_for_commands()
 
 if __name__ == "__main__":
     main()

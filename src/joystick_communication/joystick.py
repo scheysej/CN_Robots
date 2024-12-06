@@ -108,21 +108,24 @@ class KeyboardController:
 
     def dynamic_joining_listener(self):
         with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as sock:
-            sock.bind(('', self.listen_port))
-            print(f"Listening for responses on port {self.listen_port}")
+            sock.bind(('', 65099))
+            stop_event_dynamic_joining = threading.Event()
+
+            print(f"Listening for responses on port 65099")
             
-            while not self.stop_event.is_set():
+            while not stop_event_dynamic_joining.is_set():
                 try:
                     data, addr = sock.recvfrom(1024)
-                    #message = json.loads(data.decode())
-                    broadcast.broadcast_message(data)
-                    #print(f"Received response from {addr}: {message}")
-                except socket.timeout:
-                    continue
-                except json.JSONDecodeError:
-                    print("Received malformed JSON message")
-                except Exception as e:
-                    print(f"Error in listener: {e}")
+                    print(data, addr)
+                        #message = json.loads(data.decode())
+                        # broadcast.broadcast_message(data)
+                        #print(f"Received response from {addr}: {message}")
+                    except socket.timeout:
+                        continue
+                    except json.JSONDecodeError:
+                        print("Received malformed JSON message")
+                    except Exception as e:
+                        print(f"Error in listener: {e}")
 
     def start_listener(self):
         """Start listening for responses from leader."""
