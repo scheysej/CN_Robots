@@ -38,6 +38,7 @@ class KeyboardController:
         self.listener = keyboard.Listener(on_press=self.on_press, on_release=self.on_release)
         self.listener_thread = threading.Thread(target=self.start_listener, daemon=True)
 
+        self.dynamic_joining_thread = threading.Thread(target=self.dynamic_joining_listener, daemon=True )
         # State variables for movement commands
         self.x_command = "center"
         self.y_command = "stop"
@@ -104,6 +105,24 @@ class KeyboardController:
                 print(f"Sent movement command to leader: {message}")
         except Exception as e:
             print(f"Error sending message: {e}")
+
+    def dynamic_joining_listener(self):
+        with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as sock:
+            sock.bind(('', self.listen_port))
+            print(f"Listening for responses on port {self.listen_port}")
+            
+            while not self.stop_event.is_set():
+                try:
+                    data, addr = sock.recvfrom(1024)
+                    #message = json.loads(data.decode())
+                    broadcast.broadcast_message(data)
+                    #print(f"Received response from {addr}: {message}")
+                except socket.timeout:
+                    continue
+                except json.JSONDecodeError:
+                    print("Received malformed JSON message")
+                except Exception as e:
+                    print(f"Error in listener: {e}")
 
     def start_listener(self):
         """Start listening for responses from leader."""
