@@ -6,7 +6,7 @@ from utils.device_identity import get_device_identity
 
 
 BROADCAST_ADDR = '255.255.255.255' 
-PORT = 65999
+PORT = 65099
 
 def get_local_ip():
     with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
@@ -54,6 +54,7 @@ def request_join(robot_identity, stop_event):
         RobotBrand: {robot_identity['robot_brand']}
     """
 
+    print("Broadcasting", request_message)
     with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as requesting_socket:
         requesting_socket.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
         print(f"Requesting to Join...")
@@ -71,8 +72,7 @@ def request_join(robot_identity, stop_event):
 def main(): 
     robot_identity = get_device_identity()
     print("Device identity retrieved")
-    
-    
+
     stop_event = threading.Event()
 
     # Create and start broadcast and listen threads

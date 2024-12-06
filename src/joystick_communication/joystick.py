@@ -120,11 +120,11 @@ class KeyboardController:
                         #message = json.loads(data.decode())
                         # broadcast.broadcast_message(data)
                         #print(f"Received response from {addr}: {message}")
-                    except socket.timeout:
+                except socket.timeout:
                         continue
-                    except json.JSONDecodeError:
+                except json.JSONDecodeError:
                         print("Received malformed JSON message")
-                    except Exception as e:
+                except Exception as e:
                         print(f"Error in listener: {e}")
 
     def start_listener(self):
