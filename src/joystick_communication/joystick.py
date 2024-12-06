@@ -22,6 +22,7 @@ class KeyboardController:
     def __init__(self, leader_ip=None, leader_id=None):
         devc = get_device_identity()
         self.id = devc["device_id"]
+        self.devices_list = None
         self.device_type = "Keyboard"
         self.ip = self.get_local_ip()
         self.status = "Active"
@@ -37,8 +38,8 @@ class KeyboardController:
         # Initialize the keyboard listener
         self.listener = keyboard.Listener(on_press=self.on_press, on_release=self.on_release)
         self.listener_thread = threading.Thread(target=self.start_listener, daemon=True)
-
-        self.dynamic_joining_thread = threading.Thread(target=self.dynamic_joining_listener, daemon=True )
+        self.dynamic_joining_thread = threading.Thread(target=self.dynamic_joining_listener, daemon=True)
+       
         # State variables for movement commands
         self.x_command = "center"
         self.y_command = "stop"
@@ -102,7 +103,7 @@ class KeyboardController:
         try:
             with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as sock:
                 sock.sendto(message.encode(), (self.leader_ip, self.leader_port))
-                print(f"Sent movement command to leader: {message}")
+                # print(f"Sent movement command to leader: {message}")
         except Exception as e:
             print(f"Error sending message: {e}")
 
@@ -111,12 +112,48 @@ class KeyboardController:
             sock.bind(('', 65099))
             stop_event_dynamic_joining = threading.Event()
 
-            print(f"Listening for responses on port 65099")
-            
+            print(f"Listening for join requests on port 65099")
+            devices = self.devices_list
+
+            print("All devices", devices)
             while not stop_event_dynamic_joining.is_set():
                 try:
                     data, addr = sock.recvfrom(1024)
-                    print(data, addr)
+
+                    message = data.decode().strip().splitlines()
+                
+                    message_type = message[0].split(":")[1].strip()
+                    
+                    if message_type == 'REQUEST_TO_JOIN':
+                        device_info = {
+                            'DeviceID': int(message[1].split(":")[1].strip()),
+                            'DeviceType': message[2].split(":")[1].strip(),
+                            'IP': message[3].split(":")[1].strip(),
+                            'RobotBrand': message[4].split(":")[1].strip(),
+                        }
+                    
+                        device_exists = any(device['IP'] == device_info['IP'] or device['DeviceID'] == device_info['DeviceID'] for device in devices)
+                        
+                        if device_exists:
+                            continue  
+
+                        print("JOIN REQUEST RECEIVED AND PROCESSED")
+                        print(data, addr)
+
+                         # Prepare the response
+                        response_message = "ACCEPTED"
+                        response = response_message.encode()
+                        print("SEND REQUEST")
+
+                        #Send to each robot in devices to stop moving
+                        self.stopForReelection()
+
+                        #Send to the robot that its request has been heard and it is now part of the robot fleet
+                        sock.sendto(response, (device_info['IP'], 65099))
+                        print("Response sent to: ", addr)
+
+                        devices.append(device_info)
+
                         #message = json.loads(data.decode())
                         # broadcast.broadcast_message(data)
                         #print(f"Received response from {addr}: {message}")
@@ -126,6 +163,23 @@ class KeyboardController:
                         print("Received malformed JSON message")
                 except Exception as e:
                         print(f"Error in listener: {e}")
+  
+
+    def stopForReelection(self):
+        print("Stop and request for reelection")
+
+        message = {
+            "type": "STOP_AND_PREPARE_FOR_REELECTION",
+            "id": self.id,
+            "device_type": self.device_type,
+            "timestamp": time.time()
+        }
+
+        message["signature"] = self.sign_message(message)
+        msg = json.dumps(message)
+        self.send_to_leader(msg)
+
+        print("message sent")
 
     def start_listener(self):
         """Start listening for responses from leader."""
@@ -146,9 +200,10 @@ class KeyboardController:
                 except Exception as e:
                     print(f"Error in listener: {e}")
 
-    def run(self):
+    def run(self, devices):
         print("Starting keyboard controller. Use arrow keys to control robots.")
         print("Press Ctrl+C to exit.")
+        self.devices_list = devices
         
         if not self.leader_ip or not self.leader_id:
             print("Error: No leader information provided")
@@ -158,9 +213,9 @@ class KeyboardController:
 
         # Start the listener thread
         self.listener_thread.start()
-
-        # Start the pynput listener
+        self.dynamic_joining_thread.start()
         self.listener.start()
+        
 
         try:
             while True:

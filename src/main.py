@@ -3,7 +3,9 @@ from leader_election import elections
 from joystick_communication.joystick import KeyboardController
 from utils.device_identity import get_device_identity
 import time 
-
+import json
+import socket
+import threading
 def main():
     # Get device identity
     # Robot identity will look like
@@ -51,12 +53,10 @@ def main():
 
             if leader_ip:
                 controller = KeyboardController(leader_ip=leader_ip, leader_id=elected_leader_id)
-                controller.run()  # Start the controller logic
+                controller.run(devices)  # Start the controller logic
             else:
                 print("Error: Could not find leader's IP address")
 
-        controller.dynamic_joining_listener() 
-  
 
     # Get device identity again as its updated after leader election    
     robot_identity = get_device_identity() 
