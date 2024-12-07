@@ -35,48 +35,6 @@ def get_device_identity():
     if os.path.exists(identity_file):
         with open(identity_file, "r") as f:
             identity = json.load(f)
-<<<<<<< HEAD
-            if identity["type"] == "Keyboard":
-                keyboard_count += 1
-            return identity["id"], identity["type"]
-            
-    try:
-        with open("/proc/cpuinfo", "r") as f:
-            for line in f:
-                if line.startswith("Serial"):
-                    serial = line.split(":")[1].strip()
-                    device_id = int(serial[-6:], 16)
-                    break
-    except:
-        raise Exception("Could not read Raspberry Pi serial number")
-
-    device_type = "Robot"
-    if find_keyboard_device():
-        # Check network for other keyboard devices
-        keyboard_files = glob.glob(os.path.join(os.path.dirname(project_root), "**/device_identity.json"), recursive=True)
-        for kf in keyboard_files:
-            try:
-                with open(kf, "r") as f:
-                    other_identity = json.load(f)
-                    if other_identity["type"] == "Keyboard":
-                        keyboard_count += 1
-            except:
-                continue
-                
-        if keyboard_count >= 2:
-            print("Error: More than 2 keyboards detected in the network!")
-            print("Please ensure only one keyboard controller is active.")
-            exit(1)  # Exit the program
-            
-        device_type = "Keyboard"
-
-    identity = {"id": device_id, "type": device_type, "serial": serial}
-
-    with open(identity_file, "w") as f:
-        json.dump(identity, f)
-
-    return device_id, device_type
-=======
             return identity
 
     
@@ -116,4 +74,3 @@ def write_device_identity(content):
 
 if __name__ == "__main__":
 	print(get_device_identity())
->>>>>>> clean
