@@ -9,18 +9,8 @@
 from __future__ import division
 import time
 #Import the PCA9685 module.
-import Adafruit_PCA9685 
-import RPi.GPIO as GPIO 
-import smbus
-bus = smbus.SMBus(1)
-time.sleep(1)
-#while True:
-#	data = bus.read_i2c_block_data(0x04,0x02,4)
-#	result = 0
-#	for b in data:
-#		result = result * 256 + int(b)
-#	print(result)
-#	time.sleep(1)
+import Adafruit_PCA9685
+import RPi.GPIO as GPIO
 # Initialise the PCA9685 using the default address (0x40).
 pwm = Adafruit_PCA9685.PCA9685(0x5f)
  
@@ -100,35 +90,35 @@ def steer(angle):
 	if angle<LEFT :
 		angle=LEFT
 	pwm.set_pwm(servo_pin, 0, angle)
-'''
-steer(CENTER)	
-forward()
-time.sleep(2)  
-stopcar()
-time.sleep(0.25)
+	print("Angle: ", angle)
+if __name__ == "__main__":
+	steer(CENTER)	
+	forward()
+	time.sleep(2)  
+	stopcar()
+	time.sleep(0.25)
 
-backward()
-time.sleep(2)  
-stopcar()
-time.sleep(0.25) 
+	backward()
+	time.sleep(2)  
+	stopcar()
+	time.sleep(0.25) 
 
-steer(LEFT)
-forward()
-time.sleep(2)  
- 
-steer(RIGHT)
-forward()
-time.sleep(2)  
+	steer(LEFT)
+	forward()
+	time.sleep(2)  
+	
+	steer(RIGHT)
+	forward()
+	time.sleep(2)  
 
-backward()
-time.sleep(2)  
+	backward()
+	time.sleep(2)  
 
-steer(LEFT)
-backward()
-time.sleep(2)  
-stopcar()
-steer(CENTER)	
+	steer(LEFT)
+	backward()
+	time.sleep(2)  
+	stopcar()
+	steer(CENTER)	
 
-time.sleep(2)
-pwm.set_pwm(15, 0, 0)
-'''
+	time.sleep(2)
+	pwm.set_pwm(15, 0, 0)

@@ -8,6 +8,7 @@ Instructor: Dr. Utayba Mohammad
 import os
 import json
 import glob
+import random
 
 
 def find_project_root():
@@ -34,6 +35,7 @@ def get_device_identity():
     if os.path.exists(identity_file):
         with open(identity_file, "r") as f:
             identity = json.load(f)
+<<<<<<< HEAD
             if identity["type"] == "Keyboard":
                 keyboard_count += 1
             return identity["id"], identity["type"]
@@ -74,3 +76,44 @@ def get_device_identity():
         json.dump(identity, f)
 
     return device_id, device_type
+=======
+            return identity
+
+    
+    device_type = "robot"
+
+    if find_keyboard_device():
+        device_type = "keyboard"
+
+    while True:
+        robot_brand = input("What type of robot is this? (Adeept or OSOYOO or NA)")
+        robot_brand = robot_brand.lower()
+
+        if(robot_brand == "adeept" or robot_brand == "osoyoo" or robot_brand == "na"):
+            break
+    
+    device_id = random.randint(1_000_000, 2_000_000)
+
+    identity = {
+        'device_id': device_id,
+        'device_type': device_type,
+	    'robot_brand': robot_brand,
+        'role': "undecided"
+    }
+    
+    with open(identity_file, 'w') as f:
+        json.dump(identity, f)
+    
+    return identity
+
+def write_device_identity(content):
+    project_root = find_project_root()
+    identity_file = os.path.join(project_root, "device_identity.json")
+
+    with open(identity_file, 'w') as f:
+        json.dump(content, f)
+
+
+if __name__ == "__main__":
+	print(get_device_identity())
+>>>>>>> clean

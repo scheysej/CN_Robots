@@ -23,30 +23,22 @@ BROADCAST_ADDR = "255.255.255.255"  # Define the broadcast address and port
 PORT = 65009
 
 
-class Device:
-    def __init__(self):
-        self.id, self.device_type = get_device_identity()
-        self.ip = get_local_ip()
-        self.status = "Active"
-        self.role = "Undecided"
-
-    def create_broadcast_message(self):
-        return f"""Type: DISCOVER
-        ID: {self.id}
-        DeviceType: {self.device_type}
-        IP: {self.ip}
-        Status: {self.status}
-        Role: {self.role}"""
-
-    def object_representation(self):
+def create_broadcast_message(robot_identity):
+        return f"""MessageType: DISCOVER
+        DeviceID: {robot_identity['device_id']}
+        DeviceType: {robot_identity['device_type']}
+        IP: {LOCAL_IP_ADDRESS}
+        RobotBrand: {robot_identity['robot_brand']}
+        """
+    
+def create_object_representation(robot_identity):
         return {
-            "ID": self.id,
-            "DeviceType": self.device_type,
-            "IP": self.ip,
-            "Status": self.status,
-            "Role": self.role,
+            'ID': self.id,
+            'DeviceType': self.device_type,
+            'IP': self.ip,
+            'Status': self.status,
+            'Role': self.role
         }
-
 
 # Function to broadcast a message
 def broadcast(broadcast_message, stop_event):
@@ -84,25 +76,22 @@ def listen(discovered_devices, lock, stop_event):
                     continue
 
                 message = data.decode().strip().splitlines()
-
+                
                 type = message[0].split(":")[1].strip()
-
-                if type == "DISCOVER":
+                
+                if type == 'DISCOVER':
                     # Parse the broadcast message into a dictionary
                     device_info = {
-                        "ID": int(message[1].split(":")[1].strip()),
-                        "DeviceType": message[2].split(":")[1].strip(),
-                        "IP": message[3].split(":")[1].strip(),
-                        "Status": message[4].split(":")[1].strip(),
-                        "Role": message[5].split(":")[1].strip(),
+                        'ID': int(message[1].split(":")[1].strip()),
+                        'DeviceType': message[2].split(":")[1].strip(),
+                        'IP': message[3].split(":")[1].strip(),
+                        'Status': message[4].split(":")[1].strip(),
+                        'Role': message[5].split(":")[1].strip()
                     }
 
                     with lock:
                         # Avoid duplicate devices with the same ID
-                        if not any(
-                            device["ID"] == device_info["ID"]
-                            for device in discovered_devices
-                        ):
+                        if not any(device['ID'] == device_info['ID'] for device in discovered_devices):
                             discovered_devices.append(device_info)
                             print(f"Discovered device: {device_info}")
 
@@ -117,7 +106,7 @@ def discover_neighbouring_devices():
     """Modified version of discover_neighbouring_robots that handles both robots and joysticks"""
     device = Device()  # Create device instance
     BROADCAST_MESSAGE = device.create_broadcast_message()
-
+    
     discovered_devices = []  # Will contain both robots and joysticks
     discovered_devices.append(device.object_representation())
 
