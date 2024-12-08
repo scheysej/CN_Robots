@@ -1,4 +1,4 @@
-# Joystick-Controlled Convoy Protocol for Road Hazard Detection and Secure Communication
+# Joystick-Controlled Convoy Protocol for Secure Communication and Coordination
 
 This project focuses on developing a convoy protocol that enables road hazard detection and secure communication between autonomous vehicles using a joystick-controlled system. The protocol supports functions such as leader election, secure command transmission, and dynamic joining of new vehicles.
 
@@ -17,6 +17,7 @@ CN_Robots
 ├── README.md
 ├── src/
 │   ├── main.py
+│   ├── request_join.py
 │   ├── discovery/
 │   ├── leader_election/
 │   ├── joystick_communication/
